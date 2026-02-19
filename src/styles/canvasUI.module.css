@@ -1,0 +1,254 @@
+.uiOverlap {
+	position: fixed;
+	z-index: 1000;
+}
+
+/* In bottom left  */
+.zoomTools {
+	z-index: 1;
+	position: fixed;
+	bottom: 16px;
+	left: 16px;
+
+	display: flex;
+	align-items: center;
+	gap: 3px;
+
+
+	.zoomTools button {
+		width: 20px;
+		height: 17px;
+		padding: 1px;
+		text-align: center;
+	}
+
+	.zoomTools input {
+		width: 60px;
+		text-align: center;
+		padding: 2px;
+	}
+}
+	
+
+
+
+.nodePanel {
+	z-index: 10;
+	position: fixed;
+	right: 0;
+	width: 30%;
+	min-width: 200px;
+	height: 100vh;
+	
+	border: 1px solid black;
+	background-color: goldenrod;
+
+	/* TRANSITION */
+	transform: translateX(100%);
+	transition: transform 200ms ease-out;
+
+
+	.nodePanelHandle {
+		position: absolute;
+		border: 1px solid black;
+		width: 20px;
+		height: 35px;
+		right: 100%;
+		top: 50%;
+		transform: translate(0, -50%);
+	}
+
+	span {
+		font-size: 14px;
+		font-variant: small-caps;
+	}
+
+
+	.nodeName {
+		text-align: center;
+		padding: 10px;
+	}
+	.lockNodeBtn {
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+
+	.s1 {
+		
+		.fontSize {
+			position: absolute;
+			left: 0;
+			margin: 2px;
+			width: 50px;
+		}
+		.textAlignBtns {
+			position: absolute;
+			left: 50%;
+			transform: translate(-50%, 0);
+			display: flex;
+			border: 2px solid black;
+			
+			button {
+				border: none;
+				padding: 1px;
+			}
+		}
+
+		.textColor {
+			scale: 0.85;
+			position: absolute;
+			right: 0;
+			margin: 0px 2px 2px 2px;
+		}
+	}
+
+	.s2 {
+		display: flex;
+		font-size: 13px;
+		
+		.Inp {
+			display: flex;
+			flex-direction: column;
+			width: 50%;
+			padding: 2px;
+			margin: 2px;
+
+
+			label {
+				align-self: center;
+				margin: 2px;	
+
+				input {	
+					width: 60px;
+				}
+			}
+		}
+
+	}
+
+
+	.s3 {
+		padding: 2px;
+		display: flex;
+		flex-direction: column;
+
+	
+		.backgroundColor {
+			scale: 0.85;
+			position: absolute;
+			right: 15%;
+		}
+
+		.Inp {
+			display: flex;
+			flex-direction: column;
+
+
+			label {
+				position: relative;
+				font-size: 13px;
+				margin: 3px;
+				left: 7.5%;
+
+				span {
+					font-variant: normal;
+				}
+				input {
+					width: 60px;
+					position: absolute;
+					right: 15%;
+
+				}
+				.borderColor {
+					scale: 0.8;
+					position: absolute;
+					right: 40px;
+					top: 50%;
+					transform: translate(0, -50%);
+				}
+
+			}
+			
+		}
+
+	}
+
+	.s4 {
+		text-align: center;
+		
+	}
+}
+.openedPanel {
+	transform: translateX(0%);
+}
+
+
+.nodeList {
+	z-index: 10;
+	position: fixed;
+	left: 0;
+	height: 80vh;
+	width: 20%;
+	min-width: 150px;
+
+	border: 1px solid black;
+	background-color: darkgray;
+
+	/* TRANSITION */
+	transform: translateX(-100%);
+	transition: transform 200ms ease-out;
+
+
+	.nodeListHandle {
+		position: absolute;
+		border: 1px solid black;
+		width: 20px;
+		height: 35px;
+		left: 100%;
+		top: 50%;
+		transform: translate(0, -50%);
+	}
+}
+.openedList {
+	transform: translateX(0%);
+}
+
+
+.controlPanel {
+	z-index: 1;
+	position: fixed;
+	bottom: 50px;
+	left: 50%;
+	transform: translateX(-50%);
+
+	border: 2px solid black;
+	border-radius: 12px;
+	width: 190px;
+	height: 24px;
+
+	display: flex;
+	gap: 1px;
+	background-color: black;
+
+	
+	div {
+		flex: 1;
+		text-align: center;
+		background-color: aqua;
+		user-select: none;
+
+
+		&:first-child {
+			border-radius: 12px 0 0 12px;
+		}
+		&:last-child {
+			border-radius: 0 12px 12px 0;
+		}
+		
+		&:hover {
+			background-color: #f8f9fa;
+		}
+	}
+	
+}

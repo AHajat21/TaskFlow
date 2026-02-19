@@ -1,0 +1,53 @@
+.projectsList {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+
+}
+
+.projectCard {
+	position: relative;
+
+	border: 2px solid black;
+	
+	width: 300px;
+	height: 200px;
+}
+.projectCard:hover {
+	cursor: pointer;
+}
+
+
+.renameInput {
+	border: none;
+	display: block;
+	margin: auto;
+	text-align: center;
+	color: red;
+	background: transparent;
+	font-size: 1.1rem;
+	font-weight: bold;
+}
+
+.createProjectButton {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+
+	font-size: 2rem;
+	width: 60px
+}
+.deleteProjectBtn {
+	position: absolute;
+	top: 2px;
+	right: 5px;
+	width: 30px;
+}
+
+.projectTimestamps {
+	position: absolute;
+	bottom: 4px;
+	color: grey;
+	font: .5rem;
+
+}

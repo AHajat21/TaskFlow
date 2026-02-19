@@ -1,0 +1,35 @@
+.nodeHandle {
+	height: 10%;
+	text-align: center;
+	cursor: grab;
+}
+
+.nodeDeleteButton {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+.nodeTitle {
+	border: none;
+	background-color: rgb(131, 131, 131);
+
+	padding: 2px;
+	font-size: large;
+	text-align: center;
+
+	width: 100%;
+	height: 10%;
+}
+input:focus {
+  outline: none;
+}
+
+
+.nodeContent {
+	border: none;
+	resize: none;
+	width: 100%;
+	height: 80%;
+	overflow: scroll;
+}

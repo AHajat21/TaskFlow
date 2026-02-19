@@ -1,0 +1,7 @@
+.canvasStage {
+	width: 100vw;
+	height: 100vh;
+	position: relative;
+	background-color: #f8f9fa;
+}
+
