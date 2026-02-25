@@ -7,7 +7,7 @@ const UserContext = createContext(null);
 export const UserProvider = ({ children }) => {
 	const [user, setUser] = useState(undefined);
 	const [email, setEmail] = useState("")
-	const [error, setError] = useState("")
+	const [err, setErr] = useState("")
 	const [loading, setLoading] = useState(false)
 
 	useEffect(() => {
@@ -31,7 +31,7 @@ export const UserProvider = ({ children }) => {
 
 	// LOGOUT
 	const handleLogout = async () => {
-		setError("")
+		setErr("")
 		setLoading(true)
 		const {data, error} = await supabase.auth.signOut()
 		setLoading(false)
@@ -44,7 +44,7 @@ export const UserProvider = ({ children }) => {
 
   	return (
 		<UserContext.Provider value={
-			{ user, setUser, loading, setLoading, error, setError, handleLogout }
+			{ user, setUser, loading, setLoading, err, setErr, handleLogout }
 		}>
 			{children}
 		</UserContext.Provider>

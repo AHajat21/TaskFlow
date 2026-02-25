@@ -14,6 +14,7 @@ const Header = () => {
 			<Link className={styles.title} to={`/${username}`}>
 				<h1 >Task Manager</h1>
 			</Link>
+			<Link className={styles.aboutLink} to="/about">About</Link>
 			
 			
  			{user ?

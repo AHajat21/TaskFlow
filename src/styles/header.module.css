@@ -2,19 +2,17 @@
 	display: flex;
 	position: relative;
 	align-items: center;
-	padding: 1rem 1rem;
+	padding: 16px;
 
-	background: #020024;
-	background: linear-gradient(0deg, rgba(2, 0, 36, .85) 0%, rgba(9, 9, 121, .85) 100%);
-
-	border-bottom: 1px ridge rgb(31, 28, 70);
+	background: #1c2341ca;
+	backdrop-filter: blur(3px);
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .title {
-	font-size: .8rem;
-	color: #605c5c;
-	text-shadow: 2px 2px 4px rgba(0, 0, 0, 1);
+	font-size: 12px;
+	color: #0a124d;
+	text-shadow: 2px 2px 4px #3c3939;
 	text-decoration: none;
 }
 
@@ -27,10 +25,10 @@
 	border-radius: 5px;
 	
 	position: absolute;
-	right: 1rem;
+	right: 16px;
 
-	padding: 0.5rem 1rem;
-	font-size: 0.9rem;
+	padding: 8px 16px;
+	font-size: 16px;
 }
 
 .logoutButton:hover {
@@ -40,7 +38,12 @@
 
 .loginLink {
 	position: absolute;
-	right: 1rem;
+	right: 12px;
 	color: #605c5c;
-	font-size: 0.9rem;
+	font-size: 16px;
+}
+.aboutLink {
+	margin-left: 16px;
+	color: rgb(80, 23, 35);
+	text-decoration: none;
 }

@@ -9,7 +9,7 @@ export const fetchProjectsSupa = async (userId) => {
 		.eq("user_id", userId)
 
 	if (error) throw error;
-	return data
+	return data;
 }
 
 export const fetchProjectByIdSupa = async (projectId) => {
@@ -20,15 +20,17 @@ export const fetchProjectByIdSupa = async (projectId) => {
 		.single()
 
 	if (error) throw error;
-	return data
+	return data;
 }
 
 export const createProjectSupa = async (projectName) => {
-  	const { error } = await supabase
+  	const { data, error } = await supabase
    	.from("Projects")
    	.insert({name: projectName})
+		.select()
 
 	if (error) throw error;
+	return data;
 }
 
 export const deleteProjectSupa = async (projectId) => {

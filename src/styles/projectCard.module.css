@@ -1,0 +1,58 @@
+.projectCard {
+	position: relative;
+
+	background: rgba(255,255,255,0.05);
+	backdrop-filter: blur(8px);
+	border: 1px solid rgba(255,255,255,0.08);
+	border-radius: 12px;
+	
+	box-shadow: 1px 1px 5px black;
+
+	padding: 3px;
+	
+	width: clamp(250px, 30vw, 320px);
+	height: 150px;
+
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.projectCard:hover {
+	transform: translateY(-4px);
+	box-shadow:
+		2px 1px 2px rgba(0, 0, 0, 0.1),
+		2px 12px rgba(0, 0, 0, 0.15);
+	cursor: pointer;
+}
+
+
+.renameInput {
+	border: none;
+	display: block;
+	margin: auto;
+	text-align: center;
+	color: red;
+	background: transparent;
+	font-size: 16px;
+	font-weight: bold;
+}
+.renameInput:focus {
+	outline: none;
+	border-bottom-color: #4a90e2;
+}
+
+
+.deleteProjectBtn {
+	position: absolute;
+	top: 2px;
+	right: 5px;
+	width: 30px;
+}
+
+.projectTimestamps {
+	position: absolute;
+	bottom: 0px;
+
+	color: grey;
+	opacity: 0.6;
+	font-size: 12px;
+	margin: 2px;
+}
