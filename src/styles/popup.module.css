@@ -1,0 +1,77 @@
+.hideBackground {
+	position: fixed;
+	inset: 0;
+	background-color: rgba(0, 0, 0, 0.7);
+}
+
+.content {
+	position: fixed;
+	left: 50%;
+	top: 40%;
+	transform: translate(-50%, -40%);
+	border: 2px solid black;
+	border-radius: 6px;
+	width: 220px;
+	height: 120px;
+	background-color: #162151f8;
+}
+
+.prompt {
+	color: #59648df8;
+	text-align: center;
+}
+
+.inputBox {
+	position: absolute;
+	left: 50%;
+	top: 30%;
+	transform: translate(-50%, -30%);
+
+	padding: 2px;
+	text-align: center;
+}
+
+
+.confirmBtn {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+
+	margin: 7px 5px;
+	padding: 1px;
+	border: 1px solid black;
+	border-radius: 35%;
+	width: 30px;
+	height: 30px;
+
+	background-color: rgb(20, 30, 180);
+	color: #5f6da1f8;
+}
+.confirmBtn:hover {
+	cursor: pointer;
+	border-color: rgb(130, 160, 224);
+	background-color: rgb(35, 43, 192);
+	transition: background-color 0.1s, border-color 0.2s ease-in;
+}
+
+.cancelBtn {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+
+	margin: 7px 5px;
+	padding: 1px;
+	border: 1px solid black;
+	border-radius: 35%;
+	width: 25px;
+	height: 25px;
+
+	background-color: rgb(164, 52, 52);
+	color: rgb(71, 49, 49);
+}
+.cancelBtn:hover {
+	cursor: pointer;
+	background-color: rgb(185, 69, 69);
+	border-color: rgb(196, 131, 131);
+	transition: background-color 0.1s, border-color 0.2s ease-in;
+}

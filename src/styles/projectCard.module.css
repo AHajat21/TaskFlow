@@ -13,7 +13,7 @@
 	width: clamp(250px, 30vw, 320px);
 	height: 150px;
 
-	transition: transform 0.2s ease, box-shadow 0.2s ease;
+	
 }
 .projectCard:hover {
 	transform: translateY(-4px);
@@ -21,6 +21,7 @@
 		2px 1px 2px rgba(0, 0, 0, 0.1),
 		2px 12px rgba(0, 0, 0, 0.15);
 	cursor: pointer;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 
@@ -33,6 +34,7 @@
 	background: transparent;
 	font-size: 16px;
 	font-weight: bold;
+	text-decoration: underline;
 }
 .renameInput:focus {
 	outline: none;
@@ -44,7 +46,19 @@
 	position: absolute;
 	top: 2px;
 	right: 5px;
+
+	border: 1px solid black;
+	border-radius: 5px;
 	width: 30px;
+
+	background-color: rgb(164, 52, 52);
+	color: rgb(71, 49, 49);
+}
+.deleteProjectBtn:hover {
+	cursor: pointer;
+	background-color: rgb(185, 69, 69);
+	border-color: rgb(196, 131, 131);
+	transition: background-color 0.1s, border-color 0.2s ease-in;
 }
 
 .projectTimestamps {

@@ -38,7 +38,7 @@ export const UserProvider = ({ children }) => {
 
 		if (error) {
 			console.log("Logout error:", error.message)
-			return setError(error.message)
+			return setErr(error.message)
 		}
 	}
 

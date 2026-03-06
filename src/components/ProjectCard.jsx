@@ -12,7 +12,7 @@ const ProjectCard = ({ project, onDelete, onRename, onClicked }) => {
 			<button
 				onClick={(e) => {onDelete(project); e.stopPropagation()}}
 				className={styles.deleteProjectBtn}
-			><b>X</b></button>
+			><b>✘</b></button>
 				
 			{/* RENAME INPUT */}
 			<input

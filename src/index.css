@@ -5,6 +5,12 @@
   	font-family: monospace, Helvetica, sans-serif;
 }
 
+html, body {
+	margin: 0;
+	height: 100%;
+	overflow: hidden
+}
+
 .MuiColorInput-TextField input {
 	display: none;
 }
