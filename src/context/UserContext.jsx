@@ -7,8 +7,6 @@ const UserContext = createContext(null);
 export const UserProvider = ({ children }) => {
 	const [user, setUser] = useState(undefined);
 	const [email, setEmail] = useState("")
-	const [err, setErr] = useState("")
-	const [loading, setLoading] = useState(false)
 
 	useEffect(() => {
 		// 1, Get current Supabase user
@@ -29,22 +27,35 @@ export const UserProvider = ({ children }) => {
 		return () => listener.subscription.unsubscribe()
 	}, []);
 
-	// LOGOUT
+	// AUTH
+	const handleSignup = async (email, password) => {
+		try {
+			const {error} = await supabase.auth.signUp({email, password})
+			return error ? error.message : null
+		} catch (err) {
+			return "Network error. Please try again."
+		}
+	}
+	const handleLogin = async (email, password) => {
+		try {
+			const {error} = await supabase.auth.signInWithPassword({email, password})
+			return error ? error.message : null
+		} catch (err) {
+			return "Network error. Please try again."
+		}
+	}
 	const handleLogout = async () => {
-		setErr("")
-		setLoading(true)
-		const {data, error} = await supabase.auth.signOut()
-		setLoading(false)
-
-		if (error) {
-			console.log("Logout error:", error.message)
-			return setErr(error.message)
+		try {
+			const {error} = await supabase.auth.signOut()
+			return error ? error.message : null
+		} catch (err) {
+			return "Network error. Please try again."
 		}
 	}
 
   	return (
 		<UserContext.Provider value={
-			{ user, setUser, loading, setLoading, err, setErr, handleLogout }
+			{ user, setUser, handleSignup, handleLogin, handleLogout }
 		}>
 			{children}
 		</UserContext.Provider>

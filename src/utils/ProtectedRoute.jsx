@@ -1,19 +1,20 @@
-import React from 'react'
-import { Navigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useUser } from '../context/UserContext.jsx'
+import { useEffect, useState } from "react";
 
 const ProtectedRoute = ({ children }) => {
 	const { user } = useUser();
+	const navigate = useNavigate()
 	
-	if (user === undefined) {
-		return <div>Loading...</div>;
-	}
+	useEffect(() => {
+		if (user === null) {
+			navigate("/login", { replace: true })
+		}
+	}, [user, navigate])
 
-	if (user === null) {
-		return <Navigate to="/login" replace />;
-	}
+	if (user === undefined) return <div>Loading...</div>
 
-	return children;
+	return children
 }
 
 export default ProtectedRoute

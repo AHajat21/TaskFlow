@@ -92,7 +92,7 @@ const CanvasUI = ( {nodeData, addNode, updateNode} ) => {
 			</button>
 			
 
-
+			
 			<button className={styles.lockNodeBtn}>🔒/🔓</button> {/* Top left corner */} <br />
 			<h3 className={styles.nodeName}>{(name == null) ? "Untitled" : name }</h3>
 			<hr />

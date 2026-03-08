@@ -1,52 +1,47 @@
-// make check for '@' and password characters client side
-
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '../helper/supabaseClient.js'
 import { useUser } from '../context/UserContext.jsx'
 
 import styles from "../styles/Login.module.css"
 
 const Login = () => {
-	const { user, err, setErr, loading, setLoading } = useUser();
+	const { user, handleSignup, handleLogin } = useUser();
+	const [error, setError] = useState(null)
+	const [loading, setLoading] = useState(false)
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
 
 	const navigate = useNavigate();
 
 
-	const isDisabled = loading || !email || password === "" || user != null;
+	const isDisabled = loading || !email || !password;
 
 
+	useEffect(() => {
+		if (user && !loading) {
+    		navigate(`/${user.email.split("@")[0]}`, { replace: true })
+  		}
+	}, [user, loading, navigate])
 
-	const validate = () => {
-		setErr("")
-		if (!email.includes("@")) setErr("Please enter a valid email");
-    	if (password.length < 6) console.log("Password must be at least 6 characters");
-	}
+	const handleAuthSubmit = async (authMethod) => {
+		let errorMessage = null
 
-	const handleSignup = async () => {
-		validate()
-		if (err != "") return;
+		if (password.length < 6) errorMessage = "Password must be at least 6 characters";
+		if (!email.includes("@") || !email.includes(".")) errorMessage = "Unable to validate email address: invalid format";
+		
+		if (errorMessage != null) {
+			setError(errorMessage)
+			return
+		}
+
 		setLoading(true)
-		const {data, error} = await supabase.auth.signUp({email, password})
-		setLoading(false)
-		setPassword("")
-
-		if (error) return setErr(error.message)
-		navigate(`/${user.email.split("@")[0]}`, { replace: true })
-	}
-
-	const handleLogin = async () => {
-		validate()
-		if (err != "") return;
-		setLoading(true)
-		const {data, error} = await supabase.auth.signInWithPassword({email, password})
-		setLoading(false)
-		setPassword("")
-
-		if (error) return setErr(error.message);
-		navigate(`/${email.split("@")[0]}`, { replace: true })
+		try {
+			errorMessage = await authMethod(email, password)
+			setPassword("")
+		} finally {
+			setLoading(false)
+		}
+		setError(errorMessage)
 	}
 
   	return (
@@ -60,6 +55,7 @@ const Login = () => {
 					placeholder="Email"
 					value={email}
 					onChange={(e) => setEmail(e.target.value)}
+					disabled={loading}
 				/>
 
 				<input
@@ -68,14 +64,23 @@ const Login = () => {
 					placeholder="Password..."
 					value={password}
 					onChange={(e) => setPassword(e.target.value)}
+					disabled={loading}
 				/>
-
-				{err && <p className={styles.error}>{err}</p>}
-				{loading && <p>Loading...</p>}
+				
 
 				<div className={styles.buttonWrapper}>
+					{/* LOADER OR ERROR MESSAGE */}
+					{loading ? 
+						<span className={styles.loader}></span>
+					:
+						error ?
+							<span className={styles.error}>{error}</span>
+						:
+							<span className={styles.error} style={{visibility: 'hidden'}}> </span>
+					}
+
 					<button className={styles.loginButton}
-						onClick={handleLogin}
+						onClick={() => handleAuthSubmit(handleLogin)}
 						disabled={isDisabled}
 					>
 						Login
@@ -83,7 +88,7 @@ const Login = () => {
 
 					<button
 						className={styles.signupButton}
-						onClick={handleSignup}
+						onClick={() => handleAuthSubmit(handleSignup)}
 						disabled={isDisabled}
 						>
 							Sign Up

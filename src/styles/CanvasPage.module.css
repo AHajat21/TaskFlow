@@ -5,3 +5,27 @@
 	background-color: #f8f9fa;
 }
 
+.errorBanner {
+	position: fixed;
+	top: 60px;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: #f44336;
+	color: white;
+	padding: 16px 24px;
+	border-radius: 4px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	z-index: 1001;
+	animation: slideDown 300ms ease;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%); /* translateX(-50%) */
+    opacity: 0;
+  }
+  to {
+    transform:  translateY(0); /* translateX(-50%) */
+    opacity: 1;
+  }
+}

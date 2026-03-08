@@ -6,10 +6,11 @@
 // 	> Update local state immediately onStop, to avoid snap issue.
 // 	> Add a grid background ( background-image: radial-gradient(#d1d1d1 1px, transparent 1px); background-size: 10px 10px;)
 import {useEffect, useState, useRef} from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch"
 
+import { useUser } from '../context/UserContext.jsx'
 import CanvasUI from "../components/CanvasUI.jsx"
 import Node from '../components/Node.jsx'
 
@@ -18,12 +19,16 @@ import { fetchProjectByIdSupa, fetchComponentsSupa, createComponentSupa, updateC
 
 import styles from "../styles/CanvasPage.module.css"
 
-const canvasPage = () => {
-	const [componentsArray, setComponentsArray] = useState([])
+const CanvasPage = () => {
+	const { user } = useUser()
+	const navigate = useNavigate()
+	const username = user ? user.email.split("@")[0] : "Guest"
 	const { projectId } = useParams()
-	const [project, setProject] = useState(null)
+	const [error, setError] = useState(null)
 
-	const [highestZIndex, setHighestZIndex] = useState(1); // [compId, index]
+	const [componentsArray, setComponentsArray] = useState([])
+
+	const [highestZIndex, setHighestZIndex] = useState(1);
 	const [selectedNodeData, setSelectedNodeData] = useState({})
 
 
@@ -35,9 +40,15 @@ const canvasPage = () => {
 		const loadProjectData = async () => {
 			try {
 				const projectData = await fetchProjectByIdSupa(projectId)
-				setProject(projectData)
-			} catch (error) {		
-				console.error("Error fetching project data:", error)
+				if (!projectData) {
+					setError("Project not found, redirecting to dashboard")
+					setTimeout(() => navigate(`/${username}`), 4000)
+      			return
+				}
+				setError(null)
+			} catch (err) {		
+				setError("Project not found, redirecting to dashboard")
+				setTimeout(() => navigate(`/${username}`), 4000)
 			}	
 		}
 		loadProjectData()
@@ -132,7 +143,12 @@ const canvasPage = () => {
 	}
 
   	return (
-		<div>
+		<>
+			{error && (
+				<div className={styles.errorBanner}>
+					<span>{error}</span>
+				</div>
+			)}
 
 			{/* CANVAS */}
 			<div className={styles.canvasStage}>
@@ -154,7 +170,7 @@ const canvasPage = () => {
 
 
 							{componentsArray.map((component) => (
-								<Node key={component.id} nodeData={component} updateNode={updateNode} onDelete={deleteNode} nodeClicked={bringNodeToFront}/>
+								<Node key={component.id} nodeData={component} updateNode={updateNode} onDelete={deleteNode} nodeClicked={bringNodeToFront} isSelected={(selectedNodeData.id == component.id)} />
 							))}
 					</TransformComponent>
 
@@ -163,11 +179,11 @@ const canvasPage = () => {
 
 			
 			
-		</div>
+		</>
   	)
 }
 
-export default canvasPage
+export default CanvasPage
 
 
 

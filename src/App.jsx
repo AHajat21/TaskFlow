@@ -1,7 +1,10 @@
+// Make homepage where path="/"
+
 import { useState, useEffect, createContext } from 'react'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import ProtectedRoute from './utils/ProtectedRoute.jsx';
 import { UserProvider } from './context/UserContext.jsx';
+import { Navigate } from 'react-router-dom';
 
 import About from './pages/About.jsx'
 import Login from './pages/Login.jsx'
@@ -16,8 +19,14 @@ const App = () => {
 			<BrowserRouter>
 				<Header />
 
-				
 				<Routes>
+
+					<Route path="/"
+						element={
+							<Navigate to="/login" replace />
+						}
+					/>
+
 					<Route path="/about" 
 						element={
 							<About />

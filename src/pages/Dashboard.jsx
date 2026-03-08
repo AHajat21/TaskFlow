@@ -22,13 +22,14 @@ const Dashboard = () => {
 
 	useEffect(() => {
 		const loadProjects = async () => {
-			const projects = await fetchProjectsSupa(user.id)
+			const projects = await fetchProjectsSupa(user?.id)
 			setProjectsArray(projects)
 		}
 		
 		if (user?.id) {
 			loadProjects()
 		}
+
 	}, [user]);
 
 
@@ -58,7 +59,7 @@ const Dashboard = () => {
 			<DeleteProjectModal open={deletePopupId} setOpen={setDeletePopupId} deleteProject={deleteProject} />
 
 			<div className={styles.heading}>
-				<h1>Dashboard</h1>
+				<h1>  Dashboard</h1>
 				<hr />
 				<button onClick={() => setIsCreatePopupOpen(true)}>✚</button>
 			</div>

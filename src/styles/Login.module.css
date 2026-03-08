@@ -20,7 +20,7 @@
 	min-width: 300px;
 	height: 50%;
 	max-height: 500px;
-	min-height: 350px;
+	min-height: 380px;
 	padding: 50px 3%;
 }
 
@@ -55,7 +55,7 @@
 	.buttonWrapper {
 		display: flex;
 		flex-direction: column;
-		margin-top: 24px;
+		gap: 12px;
 
 		align-items: center;
 	}
@@ -63,7 +63,6 @@
 
 	.loginButton, .signupButton {
 		width: 50%;
-		margin-bottom: 12px;
 		padding: 10px;
 		font-size: 18px;
 		font-weight: bold;
@@ -88,7 +87,53 @@
 
 /* ERROR MESSAGE */
 	.error {
-		color: rgba(102, 37, 50, 0.84);
-		margin-top: 16px;
-		font-variant: small-caps;
+		color: #ff6b6b;
+		background-color: rgba(255, 107, 107, 0.1);
+		height: 50px;
+		padding: 4px;
+		margin-top: 6px;
+		border-radius: 4px;
+		border: 2px solid #ff6b6b;
+		font-weight: 500;
+		font-size: 14px;
+		text-align: center;
+	}
+	.errorShake {
+		animation: shake 300ms ease;
+	}
+
+	.loader {
+		width: 24px;
+		height: 24px;
+		border: 2px solid #FFF;
+		border-bottom-color: transparent;
+		border-radius: 50%;
+		display: inline-block;
+		animation: rotation 1s linear infinite;
+	}
+
+	@keyframes rotation {
+		0% { transform: rotate(0deg) }
+		100% { transform: rotate(360deg) }
+	}
+	@keyframes shake {
+  		0%, 100% { transform: translateX(0) }
+		25% { transform: translateX(-5px) }
+		75% { transform: translateX(5px) }
+	}
+
+	@media (max-width: 480px) {
+		.loginContainer {
+			width: 90%;
+			height: auto;
+			padding: 30px 5%;
+		}
+
+		.heading {
+			font-size: 24px;
+		}
+
+		.loginButton, .signupButton {
+			width: 80%;
+		}
 	}

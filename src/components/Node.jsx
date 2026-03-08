@@ -15,24 +15,26 @@ import { useTransformContext } from 'react-zoom-pan-pinch';
 
 import styles from '../styles/node.module.css'
 
-const Node = ({nodeData , updateNode, onDelete, nodeClicked }) => {
+const Node = ({nodeData , updateNode, onDelete, nodeClicked, isSelected }) => {
 	const { id, type, name, pos_x, pos_y, pos_z, customisation, content} = nodeData
 
 	const nodeRef = useRef(null);
-	const context = useTransformContext()
 
 	// Customisation default is this: {
-	// 	"width": "200px",
-	// 	"height": "250px",
-	// 	"color": "#000000ff",
-	// 	"borderColor": "#838383ff",
-	// 	"rotation": 0,
-	// 	"borderRadius":"0px",
-	// 	"isLocked": false,
-	// 	"connectedTo": [],
-	// 	"textAlign": "left",
-	// 	"fontSize": "16px"
-	//	}
+	//   "width": 200,
+	//   "height": 250,
+	//   "fontSize": 16,
+	//   "isLocked": false,
+	//   "rotation": 0,
+	//   "textAlign": "left",
+	//   "textColor": "#000000ff",
+	//   "borderColor": "#838383ff",
+	//   "connectedTo": [],
+	//   "borderRadius": 0,
+	//   "backgroundColor": "rgb(255, 255, 255)",
+	//   "borderThickness": 4
+	// }
+
 	const nodeStyle = {
 		position: "absolute",
 		border: `${customisation.borderThickness}px solid ${customisation.borderColor}`,
@@ -42,7 +44,12 @@ const Node = ({nodeData , updateNode, onDelete, nodeClicked }) => {
 		width: customisation.width + "px",
 		height: customisation.height + "px",
 		rotate: customisation.rotate + "deg",
-		fontSize: customisation.fontSize + "px"
+		fontSize: customisation.fontSize + "px",
+
+		boxShadow: isSelected 
+    		? `0 0 0 3px #27579fb9, 0 4px 12px rgba(0,0,0,0.2)` 
+    		: `0 2px 8px rgba(0,0,0,0.12)`,
+  		transition: 'box-shadow 200ms ease',
 	}
 
 
