@@ -1,9 +1,9 @@
 // Set bounds for UI controls position e.g. when resizing window
-// Truncate scale value in input field
-// If no node is selected, display: "Please select a node"
-// Make input fields blur on onKeyDown(enter) with e.target.blur()
+// Truncate scale value in input field. Also change scale amount
 // min dimensions (or optimise)
 // Add debouncing for color changing
+// Undo/Redo
+// Add alt/title attribute for every button
 
 // OPTIONAL
 // 	> Add alt tags for when hovering over buttons
@@ -18,16 +18,23 @@ import styles from "../styles/canvasUI.module.css"
 const CanvasUI = ( {nodeData, addNode, updateNode} ) => {
 	const { id, type, name, pos_x, pos_y, pos_z, customisation, content} = nodeData
 	const inputZoomRef = useRef(null);
+
 	const [pos, setPos] = useState({x: 0, y: 0, z: 0})
 	const [dimensions, setDimensions] = useState({w: 0, h: 0, r: 0})
 	const [border, setBorder] = useState({thickness: 0, radius: 0})
+	const [colors, setColors] = useState({textColor: "", backgroundColor: "", borderColor: ""})
+	const [setTextColor] = useState()
+	const [ setBackgroundColor] = useState()
+	const [ setBorderColor] = useState()
+	
+	const contentTimerRef = useRef(null)
 
+	const [nodePanelVisible, setNodePanelVisible] = useState(false)
+	const [nodeListVisible, setNodeListVisible] = useState(false)
 
 	const { zoomIn, zoomOut, setTransform, resetTransform } = useControls()
 	const context = useTransformContext()
 
-	const [nodePanelVisible, setNodePanelVisible] = useState(false)
-	const [nodeListVisible, setNodeListVisible] = useState(false)
 
 
 	useTransformEffect(({ state }) => {
@@ -50,9 +57,24 @@ const CanvasUI = ( {nodeData, addNode, updateNode} ) => {
 			thickness: customisation?.borderThickness ?? 0,
 			radius: customisation?.borderRadius ?? 0
 		})
+		setColors({
+			textColor: customisation?.textColor ?? "#ffffff",
+			backgroundColor: customisation?.backgroundColor ?? "#ffffffff",
+			borderColor: customisation?.borderColor ?? "#ffffffff"
+		})
 	}, [customisation])
 
+	// DEBOUNCING
+	const handleContentChange = (newState, setLocalState) => {
+		setLocalState(newState)
 
+		if (contentTimerRef.current) clearTimeout(contentTimerRef.current)
+		contentTimerRef.current = setTimeout(() => {
+			updateNode(id, {customisation: {...customisation, textColor: newState}})
+			console.log("updated now")
+		}
+		, 100)
+	}
 
 	return (
 		<div className={styles.uiOverlap}>
@@ -93,13 +115,19 @@ const CanvasUI = ( {nodeData, addNode, updateNode} ) => {
 			
 
 			
-			<button className={styles.lockNodeBtn}>🔒/🔓</button> {/* Top left corner */} <br />
-			<h3 className={styles.nodeName}>{(name == null) ? "Untitled" : name }</h3>
+			<button onClick={() => updateNode(id, {customisation: {...customisation, isLocked: !customisation.isLocked}})} className={styles.lockNodeBtn}>
+				{customisation.isLocked ? '🔒' : '🔓'}
+			</button>
+			<h3 className={styles.nodeName}>{(name == "") ? "Untitled" : name }</h3>
 			<hr />
 			
 			{/* SECTION 1 */}
 			<div className={styles.s1}>
-				<input className={styles.fontSize} type="number" defaultValue={16}/>
+				<input className={styles.fontSize} type="text"
+					defaultValue={customisation.fontSize}
+					onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
+					onBlur={(e) => updateNode(id, {customisation: {...customisation, fontSize: e.target.value}})}
+				/>
 
 				<div className={styles.textAlignBtns}>
 					{/* Make buttons selectables maybe use radio */}
@@ -111,11 +139,10 @@ const CanvasUI = ( {nodeData, addNode, updateNode} ) => {
 				<MuiColorInput className={styles.textColor} format="hex8"
 					variant="standard"
 					slotProps={{input: { disableUnderline: true }}}
-					value={customisation.textColor}		
-					onChange={(color) => updateNode(id, {customisation: {...customisation, textColor: color}})}		
+					value={colors.textColor}		
+					onChange={(color) => handleContentChange(color, )}
 				/>
 			</div>
-			<br /> <br />
 
 			{/* SECTION 2 */}
 			<div className={styles.s2}>
@@ -126,7 +153,7 @@ const CanvasUI = ( {nodeData, addNode, updateNode} ) => {
 							<input type="number" value={pos.x}
 								onChange={(e) => setPos({...pos, x: e.target.value})}
 								onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
-								onBlur={() => {updateNode(id, {pos_x: pos.x})}}
+								onBlur={() => updateNode(id, {pos_x: pos.x})}
 							/>
 						</label>
 						<label>y:
@@ -152,7 +179,7 @@ const CanvasUI = ( {nodeData, addNode, updateNode} ) => {
 							<input type="number" value={dimensions.w}
 								onChange={(e) => setDimensions({...dimensions, w: e.target.value})}
 								onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
-								onBlur={() => {updateNode(id, {customisation: {...customisation, width: dimensions.w}}); console.log(customisation)}}
+								onBlur={() => updateNode(id, {customisation: {...customisation, width: dimensions.w}})}
 							/>
 						</label>
 						<label>h:
@@ -219,12 +246,12 @@ const CanvasUI = ( {nodeData, addNode, updateNode} ) => {
 			<hr />
 		
 			{/* SECTION 4 */}
-			<div className={styles.s4}>
+			{/* <div className={styles.s4}>
 				<h4>Node Name</h4>
 				<div className={styles.connectionContainer}>
-					{/* Map component names into a grid with delete button */}
+
 				</div>
-			</div>
+			</div> */}
 
 		</div>
 		}

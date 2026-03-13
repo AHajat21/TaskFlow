@@ -1,11 +1,12 @@
 // Add a last updated
-// no null project names
+// no empty project names
 
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useUser } from '../context/UserContext'
 import { fetchProjectsSupa, createProjectSupa, deleteProjectSupa, renameProjectSupa } from '../utils/supabaseQueries'
 
+import { validateProjectName } from '../utils/validation'
 import styles from "../styles/Dashboard.module.css"
 import ProjectCard from '../components/ProjectCard'
 import CreateProjectModal from '../components/CreateProjectModal'
@@ -13,6 +14,7 @@ import DeleteProjectModal from '../components/DeleteProjectModal'
 
 const Dashboard = () => {
 	const { user } = useUser()
+	const [error, setError] = useState(null)
 
 	const [projectsArray, setProjectsArray] = useState([])
 	const navigate = useNavigate()
@@ -34,18 +36,38 @@ const Dashboard = () => {
 
 
 	const createProject = async (projectName) => {
-		setIsCreatePopupOpen(false)
-		const newProject = await createProjectSupa(projectName)
-		setProjectsArray((prev) => [...prev, newProject[0]])
+		const err = validateProjectName(projectName)
+		if (err) {
+			setError(err)
+			return
+		}
+
+		try {
+			setIsCreatePopupOpen(false)
+			const newProject = await createProjectSupa(projectName.trim())
+			setProjectsArray((prev) => [...prev, newProject[0]])
+		} catch (err) {
+			setError("Failed to create project")
+		}
+	}
+	const renameProject = async (id, name) => {
+		try {
+			await renameProjectSupa(id, name)
+			setProjectsArray(prev => 
+      		prev.map(p => p.id === id ? { ...p, name: name.trim() } : p)
+    		)
+		} catch (err) {
+			setError("Failed to rename project")
+		}
+
+		
 	}
 	const deleteProject = async () => {
 		await deleteProjectSupa(deletePopupId)
 		setProjectsArray(prev => prev.filter(p => p.id !== deletePopupId))
 		setDeletePopupId(null)
 	}
-	const renameProject = async (id, name) => {
-		renameProjectSupa(id, name)
-	}
+	
 	const goToProject = (projectId) => {
 		navigate(`${projectId}`)
 	}
@@ -83,6 +105,7 @@ const Dashboard = () => {
 							onDelete={() => setDeletePopupId(project.id)}
 							onRename={renameProject}
 							onClicked={goToProject}
+							setError={setError}
 						/>
 					))}
 				</div>

@@ -1,9 +1,20 @@
 import React from 'react'
 
+import { validateProjectName } from '../utils/validation'
+
 import styles from "../styles/projectCard.module.css"
 
-const ProjectCard = ({ project, onDelete, onRename, onClicked }) => {
+const ProjectCard = ({ project, onDelete, onRename, onClicked, setError }) => {
 
+
+	const projectRename = async (projectName) => {
+		const err = validateProjectName(projectName)
+		if (err) {
+			setError(err)
+			return
+		}
+		const updated = await onRename(project.id, projectName)
+	}
 
   	return (
 		<div className={styles.projectCard} key={project.id} onClick={() => {onClicked(project.id)}}>
@@ -20,9 +31,7 @@ const ProjectCard = ({ project, onDelete, onRename, onClicked }) => {
 				type="text"
 				defaultValue={project.name}
 				onClick={(e) => e.stopPropagation()}
-				onBlur={async (e) => {
-					const updated = await onRename(project.id, e.target.value)
-				}}
+				onBlur={(e) => projectRename(e.target.value)}
 				onKeyDown={(e) => {if (e.key === "Enter") e.target.blur()}}
 			/>
 

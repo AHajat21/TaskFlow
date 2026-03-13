@@ -1,7 +1,5 @@
-// Z-Axis for nodes
 // Store Images in Supabase and add reference to content row of components table
 // Implement more react-draggable features e.g. bounds, axis lock
-// Make drag handle using this in corner: ⠿
 // Add debouncing for <input /> and <textarea />
 // Dragging when zoomed out: node doesn't follow under mouse
 
@@ -17,6 +15,9 @@ import styles from '../styles/node.module.css'
 
 const Node = ({nodeData , updateNode, onDelete, nodeClicked, isSelected }) => {
 	const { id, type, name, pos_x, pos_y, pos_z, customisation, content} = nodeData
+	const [localContent, setLocalContent] = useState(content)
+	// NOT to access node
+	const contentTimerRef = useRef(null)
 
 	const nodeRef = useRef(null);
 
@@ -44,7 +45,8 @@ const Node = ({nodeData , updateNode, onDelete, nodeClicked, isSelected }) => {
 		width: customisation.width + "px",
 		height: customisation.height + "px",
 		rotate: customisation.rotate + "deg",
-		fontSize: customisation.fontSize + "px",
+
+		pointerEvent: customisation.isLocked ? "none" : "auto" ,
 
 		boxShadow: isSelected 
     		? `0 0 0 3px #27579fb9, 0 4px 12px rgba(0,0,0,0.2)` 
@@ -52,7 +54,21 @@ const Node = ({nodeData , updateNode, onDelete, nodeClicked, isSelected }) => {
   		transition: 'box-shadow 200ms ease',
 	}
 
+	const textAreaStyle = {
+		backgroundColor: customisation.backgroundColor,
+		color: customisation.textColor,
+		textAlign: customisation.textAlign,
+		fontSize: customisation.fontSize + "px",
+	}
+	
 
+	// DEBOUNCING
+	const handleContentChange = (newContent) => {
+		setLocalContent(newContent)
+
+		if (contentTimerRef.current) clearTimeout(contentTimerRef.current)
+		contentTimerRef.current = setTimeout(() => updateNode(id, {content: newContent}), 1000)
+	}
 
 
   	return (
@@ -61,11 +77,7 @@ const Node = ({nodeData , updateNode, onDelete, nodeClicked, isSelected }) => {
 			handle = ".handle"
 			position={{x: pos_x, y: pos_y}}
 			grid={[10, 10]}
-			onStart={(e, data) => console.log('Start:', data.x, data.y)}
-			onStop={(e, data) => {
-				console.log('Stop:', data.x, data.y);
-				updateNode(id, {pos_x: data.x, pos_y: data.y})
-			}}
+			onStop={(e, data) => updateNode(id, {pos_x: data.x, pos_y: data.y})}
 			disabled={customisation.isLocked}
 		> 
 
@@ -76,7 +88,7 @@ const Node = ({nodeData , updateNode, onDelete, nodeClicked, isSelected }) => {
 						</div>
 					</div>
 
-					<button className={styles.nodeDeleteButton} onClick={() => {onDelete(id)}}>
+					<button className={styles.nodeDeleteButton} onClick={() => onDelete(id)}>
 						X
 					</button>
 
@@ -85,18 +97,18 @@ const Node = ({nodeData , updateNode, onDelete, nodeClicked, isSelected }) => {
 						style={{backgroundColor: customisation.borderColor, color: customisation.textColor}}
 						defaultValue={name}
 						placeholder="Node Title"
-						onBlur={(e) => {updateNode(id, {name: e.target.value})}}
-						onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
+						onBlur={(e) => updateNode(id, {name: e.target.value})}
+						onKeyDown={(e) => {if (e.key === "Enter") e.target.blur()}}
 					/>
 					
 					{/* TEXT OR IMAGE */}
 					{(type == "text") ?
 						<textarea
 							className={styles.nodeContent}
-							style={{backgroundColor: customisation.backgroundColor, color: customisation.textColor, textAlign: customisation.textAlign}}
-							defaultValue={content}
+							style={textAreaStyle}
+							value={localContent}
 							placeholder="Node content..."
-							onBlur={(e) => {updateNode(id, {content: e.target.value})}}
+							onChange={(e) => handleContentChange(e.target.value)}
 						/>
 					:
 						<img />

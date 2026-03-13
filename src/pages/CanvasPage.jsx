@@ -1,6 +1,4 @@
-// Redirect incorrect url. Look at loadProjectData function's catch block
 // Add project name and account to header
-// Undo/Redo
 
 // OPTIONAL
 // 	> Update local state immediately onStop, to avoid snap issue.
@@ -71,7 +69,6 @@ const CanvasPage = () => {
 				filter: `project_id=eq.${projectId}`
 			},
 			(payload) => {
-				// console.log("Something has changed...", payload)
 				
 				setComponentsArray((prev) => {
 					switch (payload.eventType) {
