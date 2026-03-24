@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import toast, { Toaster } from 'react-hot-toast'
+
 import { useUser } from '../context/UserContext.jsx'
 
 import styles from "../styles/Login.module.css"
@@ -95,6 +97,7 @@ const Login = () => {
 					</button>
 				</div>
 			</div>
+			<Toaster />
 		</div>
   )
 }

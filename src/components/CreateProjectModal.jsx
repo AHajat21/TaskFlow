@@ -17,10 +17,11 @@ const CreateProjectModal = ({open, setOpen, createProject}) => {
 				value={projectName}
 				onChange={(e) => setProjectName(e.target.value)}
 			/>
-
-			<button className={styles.cancelBtn} onClick={(e) => setOpen(false)}> <b>✗</b> </button>
-			<button className={styles.confirmBtn} onClick={(e) => createProject(projectName)} > <b>✔</b>  </button>
-
+			<div className={styles.buttonWrapper}>
+				<button className={styles.cancelBtn} onClick={(e) => setOpen(false)}> <b>✗</b> </button>
+				<button className={styles.confirmBtn} onClick={(e) => createProject(projectName)} > <b>✔</b>  </button>
+			</div>
+			
 		</div>
 		</>,
 

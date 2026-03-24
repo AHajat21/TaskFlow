@@ -81,7 +81,7 @@ const Node = ({nodeData , updateNode, onDelete, nodeClicked, isSelected }) => {
 			disabled={customisation.isLocked}
 		> 
 
-				<div ref={nodeRef} className={"node"} style={nodeStyle} onClick={() => nodeClicked(nodeData)}>
+				<div ref={nodeRef} className={`node ${styles.node}`} style={nodeStyle} onClick={() => nodeClicked(nodeData)}>
 					<div className="handle">
 						<div className={styles.nodeHandle} style={{backgroundColor: customisation.borderColor}}>
 							⠿⠿⠿

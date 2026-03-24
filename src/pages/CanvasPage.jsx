@@ -143,7 +143,7 @@ const CanvasPage = () => {
 		<>
 			{error && (
 				<div className={styles.errorBanner}>
-					<span>{error}</span>
+					<p>{error}</p>
 				</div>
 			)}
 

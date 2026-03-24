@@ -12,9 +12,10 @@ const DeleteProjectModal = ({open, setOpen, deleteProject}) => {
 		<div className={styles.content}>
 			<h5 className={styles.prompt}>Are you sure you want to delete this project?</h5>
 
-
-			<button className={styles.cancelBtn} onClick={(e) => setOpen(null)}> <b>✗</b> </button>
-			<button className={styles.confirmBtn} onClick={(e) => deleteProject()} > <b>✔</b> </button>
+			<div className={styles.buttonWrapper}>
+				<button className={styles.cancelBtn} onClick={(e) => setOpen(null)}> <b>✗</b> </button>
+				<button className={styles.confirmBtn} onClick={(e) => deleteProject()} > <b>✔</b> </button>
+			</div>
 
 		</div>
 		</>,

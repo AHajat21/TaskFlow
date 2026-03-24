@@ -1,72 +1,123 @@
 .projectCard {
 	position: relative;
 
-	background: rgba(255,255,255,0.05);
-	backdrop-filter: blur(8px);
-	border: 1px solid rgba(255,255,255,0.08);
-	border-radius: 12px;
-	
-	box-shadow: 1px 1px 5px black;
+	display: flex;
+	flex-direction: column;
+	padding: var(--space-sm);
 
-	padding: 3px;
+	background: var(--surface-glass);
+	backdrop-filter: blur(10px);
+	border: 1px solid var(--border-subtle);
+	border-radius: var(--radius-lg);
 	
-	width: clamp(250px, 30vw, 320px);
-	height: 150px;
+	box-shadow: var(--shadow-md);
+	transition: all var(--transition-base);
+	
+	cursor: pointer;
+	user-select: none;
 
-	
+	overflow: hidden;
 }
 .projectCard:hover {
 	transform: translateY(-4px);
+	background: var(--surface-glass-hover);
+	border-color: var(--color-accent);
 	box-shadow:
 		2px 1px 2px rgba(0, 0, 0, 0.1),
 		2px 12px rgba(0, 0, 0, 0.15);
-	cursor: pointer;
-	transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.projectCard p {
+	color: var(--text-secondary);
+	font-size: 14px;
+	line-height: 1.5;
+	margin-bottom: var(--space-md);
+  
+	flex-grow: 1;
+}
 
 .renameInput {
-	border: none;
-	display: block;
-	margin: auto;
-	text-align: center;
-	color: red;
 	background: transparent;
-	font-size: 16px;
-	font-weight: bold;
+	border: none;
+	border-bottom: 2px solid var(--border-subtle);
+	color: var(--text-primary);
+	font-size: 18px;
+	font-weight: 600;
+	text-align: center;
+	padding: var(--space-sm) 0;
+	margin-bottom: var(--space-md);
+
+	transition: all var(--transition-base);
+}
+.renameInput::placeholder {
+	color: var(--text-muted);
+}
+.renameInput:hover {
 	text-decoration: underline;
 }
 .renameInput:focus {
 	outline: none;
-	border-bottom-color: #4a90e2;
+	border-bottom-color: var(--color-accent);
+	background-color: rgba(0, 212, 255, 0.05);
 }
-
 
 .deleteProjectBtn {
 	position: absolute;
-	top: 2px;
-	right: 5px;
+	top: var(--space-xs);
+	right: var(--space-xs);
 
-	border: 1px solid black;
-	border-radius: 5px;
 	width: 30px;
+	height: 30px;
+	padding: 0;
+	
+	background-color: var(--color-error);
+	color: white;
+	border: 1px solid rgba(244, 67, 54, 0.6);
+	border-radius: var(--radius-md);
 
-	background-color: rgb(164, 52, 52);
-	color: rgb(71, 49, 49);
+	font-size: 16px;
+	font-weight: 600;
+	cursor: pointer;
+
+	transition: all var(--transition-base);
+	z-index: 10;
 }
 .deleteProjectBtn:hover {
-	cursor: pointer;
-	background-color: rgb(185, 69, 69);
-	border-color: rgb(196, 131, 131);
-	transition: background-color 0.1s, border-color 0.2s ease-in;
+	background-color: #d32f2f;
+	border-color: var(--color-error);
+	box-shadow: var(--shadow-sm);
+}
+.deleteProjectBtn:active {
+	transform: scale(0.95);
 }
 
 .projectTimestamps {
-	position: absolute;
-	bottom: 0px;
+	position: relative;
+	margin-top: auto;
 
-	color: grey;
-	opacity: 0.6;
+	color: var(--text-muted);
 	font-size: 12px;
-	margin: 2px;
+	opacity: 0.7;
+	
+	transition: all var(--transition-base);
+}
+.projectCard:hover .projectTimestamps {
+	opacity: 1;
+}
+
+
+@media (max-width: 480px) {
+	.projectCard {
+		padding: var(--space-md);
+	}
+
+	.deleteProjectBtn {
+		width: 26px;
+		height: 26px;
+		font-size: 14px;
+	}
+
+	.renameInput {
+		font-size: 16px;
+	}
 }

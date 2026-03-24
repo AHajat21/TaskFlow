@@ -1,35 +1,93 @@
 .nodeHandle {
 	height: 10%;
+	padding: var(--space-xs);
 	text-align: center;
+	font-size: 10px;
+	user-select: none;
+
+	background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, transparent 100%);
 	cursor: grab;
+}
+.nodeHandle:active {
+	cursor: grabbing;
 }
 
 .nodeDeleteButton {
 	position: absolute;
-	top: 0;
-	right: 0;
+	top: var(--space-xs);
+	right: var(--space-xs);
+
+	width: 20px;
+	height: 20px;
+	padding: 0;
+
+	background-color: var(--color-error);
+	color: white;
+	border: none;
+	border-radius: var(--radius-sm);
+
+	font-size: 14px;
+	font-weight: bold;
+	cursor: pointer;
+
+	opacity: 0;
+	transition: all var(--transition-slow);
+	z-index: 10;
 }
+.node:hover .nodeDeleteButton {
+	opacity: 1;
+}
+.nodeDeleteButton:hover {
+	background-color: #d32f2f;
+	box-shadow: var(--shadow-md);
+	transform: scale(1.1);
+}
+.nodeDeleteButton:active {
+	transform: scale(0.95);
+}
+
 
 .nodeTitle {
 	border: none;
-	background-color: rgb(131, 131, 131);
+	background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.05) 100%);
+	color: white;
 
-	padding: 2px;
-	font-size: large;
+	padding: var(--space-sm);
+	font-size: 14px;
+	font-weight: 600;
 	text-align: center;
 
 	width: 100%;
 	height: 10%;
+	transition: background-color var(--transition-fast);
 }
-input:focus {
-  outline: none;
+.nodeTitle:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+  background: rgba(0, 0, 0, 0.25);
 }
-
+.nodeTitle::placeholder {
+	color: rgba(255, 255, 255, 0.5);
+}
 
 .nodeContent {
 	border: none;
 	resize: none;
+
 	width: 100%;
 	height: 80%;
-	overflow: scroll;
+	padding: var(--space-sm);
+
+	line-height: 1.5;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+	overflow: auto;
+	transition: box-shadow var(--color-accent);
+}
+.nodeContent:focus {
+	outline: none;
+	box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+.nodeContent::placeholder {
+	color: #b0bec5;
 }

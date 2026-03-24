@@ -4,6 +4,7 @@
 // Add debouncing for color changing
 // Undo/Redo
 // Add alt/title attribute for every button
+// customisible pixel snap drag&drop
 
 // OPTIONAL
 // 	> Add alt tags for when hovering over buttons
@@ -23,9 +24,6 @@ const CanvasUI = ( {nodeData, addNode, updateNode} ) => {
 	const [dimensions, setDimensions] = useState({w: 0, h: 0, r: 0})
 	const [border, setBorder] = useState({thickness: 0, radius: 0})
 	const [colors, setColors] = useState({textColor: "", backgroundColor: "", borderColor: ""})
-	const [setTextColor] = useState()
-	const [ setBackgroundColor] = useState()
-	const [ setBorderColor] = useState()
 	
 	const contentTimerRef = useRef(null)
 
@@ -58,22 +56,21 @@ const CanvasUI = ( {nodeData, addNode, updateNode} ) => {
 			radius: customisation?.borderRadius ?? 0
 		})
 		setColors({
-			textColor: customisation?.textColor ?? "#ffffff",
+			textColor: customisation?.textColor ?? "#ffffffff",
 			backgroundColor: customisation?.backgroundColor ?? "#ffffffff",
 			borderColor: customisation?.borderColor ?? "#ffffffff"
 		})
 	}, [customisation])
 
 	// DEBOUNCING
-	const handleContentChange = (newState, setLocalState) => {
-		setLocalState(newState)
+	const handleContentChange = (newState, field) => {
+		setColors(prev => ({ ...prev, [field]: newState}))
 
 		if (contentTimerRef.current) clearTimeout(contentTimerRef.current)
 		contentTimerRef.current = setTimeout(() => {
-			updateNode(id, {customisation: {...customisation, textColor: newState}})
-			console.log("updated now")
+			updateNode(id, {customisation: {...customisation, [field]: newState}})
 		}
-		, 100)
+		, 200)
 	}
 
 	return (
@@ -140,60 +137,63 @@ const CanvasUI = ( {nodeData, addNode, updateNode} ) => {
 					variant="standard"
 					slotProps={{input: { disableUnderline: true }}}
 					value={colors.textColor}		
-					onChange={(color) => handleContentChange(color, )}
+					onChange={(color) => handleContentChange(color, "textColor")}
 				/>
 			</div>
 
 			{/* SECTION 2 */}
 			<div className={styles.s2}>
-				<div className={styles.Inp}>
-					<span>position: </span>
-
-						<label>x:
-							<input type="number" value={pos.x}
-								onChange={(e) => setPos({...pos, x: e.target.value})}
-								onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
-								onBlur={() => updateNode(id, {pos_x: pos.x})}
-							/>
-						</label>
-						<label>y:
-							<input type="number" value={pos.y}
-								onChange={(e) => setPos({...pos, y: e.target.value})}
-								onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
-								onBlur={() => updateNode(id, {pos_y: pos.y})}
-							/>
-						</label>
-						<label>z:
-							<input type="number" value={pos.z}
-								onChange={(e) => setPos({...pos, z: e.target.value})}
-								onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
-								onBlur={() => updateNode(id, {pos_z: pos.z})}
-							/>
-						</label>
+				<div className={styles.property}>
+					<span className={styles.title}>Position: </span>
+					<label className={styles.subProperty}>
+						<span className={styles.subTitle}>x: </span>
+						<input type="number" value={pos.x}
+							onChange={(e) => setPos({...pos, x: e.target.value})}
+							onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
+							onBlur={() => updateNode(id, {pos_x: pos.x})}
+						/>
+					</label>
+					<label className={styles.subProperty}>
+						<span className={styles.subTitle}>y: </span>
+						<input type="number" value={pos.y}
+							onChange={(e) => setPos({...pos, y: e.target.value})}
+							onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
+							onBlur={() => updateNode(id, {pos_y: pos.y})}
+						/>
+					</label>
+					<label className={styles.subProperty}>
+						<span className={styles.subTitle}>z: </span>
+						<input  type="number" value={pos.z}
+							onChange={(e) => setPos({...pos, z: e.target.value})}
+							onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
+							onBlur={() => updateNode(id, {pos_z: pos.z})}
+						/>
+					</label>
 				</div>
 
-				<div className={styles.Inp} style={{borderLeft: "2px solid black"}}>
-					<span>dimensions: </span>
+				<hr />
+
+				<div className={styles.property}>
+					<span className={styles.title}>Dimensions: </span>
 					{/* if shape is rect then: */}
-						<label>w:
+						<label className={styles.subProperty}>
+							<span className={styles.subTitle}>w: </span>
 							<input type="number" value={dimensions.w}
 								onChange={(e) => setDimensions({...dimensions, w: e.target.value})}
 								onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
 								onBlur={() => updateNode(id, {customisation: {...customisation, width: dimensions.w}})}
 							/>
 						</label>
-						<label>h:
+						<label className={styles.subProperty}>
+							<span className={styles.subTitle}>h: </span>
 							<input type="number" value={dimensions.h}
 								onChange={(e) => {setDimensions({...dimensions, h: e.target.value})}}
 								onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
 								onBlur={() => updateNode(id, {customisation: {...customisation, height: dimensions.h}})}
 							/>
 						</label>
-
-					{/* if circle
-						<label>r: <input type="number" /></label>
-					*/}
-						<label>↻:
+						<label className={styles.subProperty}>
+							<span className={styles.subTitle}>↻: </span>
 							<input type="number" value={dimensions.r}
 								onChange={(e) => {setDimensions({...dimensions, r: e.target.value})}}
 								onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
@@ -206,34 +206,42 @@ const CanvasUI = ( {nodeData, addNode, updateNode} ) => {
 
 			{/* SECTION 3 */}
 			<div className={styles.s3}>
-				<span>background:
-					<MuiColorInput className={styles.backgroundColor} format="hex8"
-						variant="standard"
-						slotProps={{input: { disableUnderline: true }}}
-						value={customisation.backgroundColor}		
-						onChange={(color) => updateNode(id, {customisation: {...customisation, backgroundColor: color}})}
-					/>
-				</span>
+				<div className={styles.property}>
+					<span className={styles.title}>Background:</span>
+					<label className={styles.subProperty}>
+						<span className={styles.subTitle}>color: </span>
+						<MuiColorInput className={styles.backgroundColor} format="hex8"
+							variant="standard"
+							slotProps={{input: { disableUnderline: true }}}
+							value={colors.backgroundColor}		
+							onChange={(color) => handleContentChange(color, "backgroundColor")}
+						/>
+					</label>
+
+					
+				</div>
 				
-				<div className={styles.Inp}>
-					<span>border: </span>
-						<label> <span>Color: </span> 
+				<div className={styles.property}>
+					<span className={styles.title}>Border: </span>
+						<label className={styles.subProperty}>
+							<span className={styles.subTitle}>color: </span> 
 							<MuiColorInput className={styles.borderColor} format="hex8"
 								variant="standard"
 								slotProps={{input: { disableUnderline: true }}}
-								value={customisation.borderColor}		
-								onChange={(color) => updateNode(id, {customisation: {...customisation, borderColor: color}})}
+								value={colors.borderColor}		
+								onChange={(color) => handleContentChange(color, "borderColor")}
 							/>
 						</label>
-						<label> <span>Thickness: </span>
+						<label className={styles.subProperty}>
+							<span className={styles.subTitle}>thickness: </span>
 							<input type="number" value={border.thickness}
 								onChange={(e) => setBorder({...border, thickness: e.target.value})}
 								onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
 								onBlur={() => updateNode(id, {customisation: {...customisation, borderThickness: border.thickness}})}
 							/>
 						</label>
-					{/* ONLY IF rect */}
-						<label> <span>Radius: </span>
+						<label className={styles.subProperty}>
+							<span className={styles.subTitle}>radius: </span>
 							<input type="number" value={border.radius}
 								onChange={(e) => setBorder({...border, radius: e.target.value})}
 								onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}

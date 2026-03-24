@@ -1,77 +1,132 @@
 .hideBackground {
 	position: fixed;
 	inset: 0;
-	background-color: rgba(0, 0, 0, 0.7);
+	background-color: rgba(0, 0, 0, 0.6);
+	backdrop-filter: blur(4px);
+	z-index: var(--z-modal-backdrop);
+
+	animation: fadeIn 200ms ease;
+}
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
 }
 
 .content {
 	position: fixed;
 	left: 50%;
 	top: 40%;
-	transform: translate(-50%, -40%);
-	border: 2px solid black;
-	border-radius: 6px;
-	width: 220px;
-	height: 120px;
-	background-color: #162151f8;
+	transform: translate(-50%, -50%);
+	z-index: var(--z-modal);
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: var(--space-md);
+
+	width: 100%;
+	max-width: 400px;
+	padding: var(--space-xl);
+
+	background-color: var(--surface-dark);
+	border: 2px solid var(--border-subtle);
+	border-radius: var(--radius-md) var(--radius-xl);
+	box-shadow: var(--shadow-xl);
+
+	animation: popIn 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes popIn {
+	from {
+		opacity: 0;
+		transform: translate(-50%, -100%) scale(0.7);
+	}
+	to {
+		opacity: 1;
+		transform: translate(-50%, -50%) scale(1);
+	}
 }
 
 .prompt {
-	color: #59648df8;
+	color: var(--text-primary);
+	font-size: 16px;
+	font-weight: 600;
 	text-align: center;
+	margin: 0;
 }
 
 .inputBox {
-	position: absolute;
-	left: 50%;
-	top: 30%;
-	transform: translate(-50%, -30%);
+	width: 100%;
+	padding: var(--space-md);
 
-	padding: 2px;
+	background-color: var(--surface-dark-secondary);
+	border: 1px solid var(--border-subtle);
+	border-radius: var(--radius-md);
+	color: var(--text-primary);
+
+	font-size: 14px;
 	text-align: center;
+
+	transition: all var(--transition-base);
+}
+.inputBox::placeholder {
+	color: var(--text-muted);
+}
+.inputBox:focus {
+	outline: none;
+	border-color: var(--color-accent);
+	box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
 }
 
+.buttonWrapper {
+	display: flex;
+	width: 100%;
+	justify-content: space-around;
+}
+
+.confirmBtn, .cancelBtn {
+	padding: var(--space-sm) var(--space-md);
+	
+	border: 1px solid var(--border-subtle);
+	border-radius: var(--radius-lg);
+
+	font-weight: 600;
+	font-size: 14px;
+	cursor: pointer;
+
+	transition: all var(--transition-base);
+}
+.confirmBtn:active, .cancelBtn:active {
+	transform: scale(0.95);
+}
 
 .confirmBtn {
-	position: absolute;
-	bottom: 0;
-	right: 0;
-
-	margin: 7px 5px;
-	padding: 1px;
-	border: 1px solid black;
-	border-radius: 35%;
-	width: 30px;
-	height: 30px;
-
-	background-color: rgb(20, 30, 180);
-	color: #5f6da1f8;
+	background-color: var(--color-success);
+	color: white;
+	border-color: var(--color-success);
 }
 .confirmBtn:hover {
-	cursor: pointer;
-	border-color: rgb(130, 160, 224);
 	background-color: rgb(35, 43, 192);
-	transition: background-color 0.1s, border-color 0.2s ease-in;
+	box-shadow: var(--shadow-md);
+	transform: scale(1.05);
 }
 
 .cancelBtn {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-
-	margin: 7px 5px;
-	padding: 1px;
-	border: 1px solid black;
-	border-radius: 35%;
-	width: 25px;
-	height: 25px;
-
-	background-color: rgb(164, 52, 52);
-	color: rgb(71, 49, 49);
+	background-color: var(--color-error);
+	color: white;
+	border-color: var(--color-error);
 }
 .cancelBtn:hover {
-	cursor: pointer;
-	background-color: rgb(185, 69, 69);
-	border-color: rgb(196, 131, 131);
-	transition: background-color 0.1s, border-color 0.2s ease-in;
+	background-color: #d32f2f;
+	box-shadow: var(--shadow-md);
+	transform: scale(1.05);
+}
+
+
+
+@media (max-width: 480px) {
+	.content {
+		max-width: calc(100% - var(--space-lg));
+		padding: var(--space-lg);
+	}
 }

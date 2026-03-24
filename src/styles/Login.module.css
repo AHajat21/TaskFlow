@@ -1,53 +1,68 @@
 .background {
-	background-color: #040058b3;
 	display: flex;
-	justify-content: center;
-	align-items: center;
+  	justify-content: center;
+  	align-items: center;
 	height: 100vh;
+
+	background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 100%);
 }
 
 .loginContainer {
-	border: 3px ridge rgb(61, 61, 61);
-	border-radius: 6px 7px 6px 5px;
+	display: flex;
+	flex-direction: column;
+
+	width: 100%;
+	max-width: 420px;
+	padding: var(--space-2xl) var(--space-xl);
+
+	background: var(--surface-dark);
+	border: 1px solid var(--border-subtle);
+	border-radius: var(--radius-xl);
 	box-shadow: 3px 3px 30px 30px rgba(0, 0, 0, 0.289), 10px -10px 200px 250px rgba(28, 27, 27, 0.67);
 
-	background-color: #54869c;
-	background: radial-gradient(circle, rgba(84, 134, 156, 1) 0%, rgba(67, 74, 70, 0.87) 100%, rgba(237, 221, 83, 1) 100%);
-	text-align: center;
-
-	width: 50%;
-	max-width: 500px;
-	min-width: 300px;
-	height: 50%;
-	max-height: 500px;
-	min-height: 380px;
-	padding: 50px 3%;
+	animation: slideUp 400ms ease;
+}
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 
 /* HEADINGS */
 	.heading {
-		font-size: 32px;
-		margin-bottom: 12px;
-		color: #afafaf;
-		text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.7);
+		font-size: 28px;
+		text-align: center;
+		margin-bottom: var(--space-lg);
+		color: var(--text-primary);
 	}
 
 
 /* INPUT FIELDS */
 	.emailInput, .pwdInput {
-		width: 80%;
-		margin: 4px;
-		padding: 4px;
-		font-size: 15px;
+		padding: var(--space-md);
+		margin-bottom: var(--space-md);
+		
+		background-color: var(--surface-dark-secondary);
+		border: 2px ridge var(--border-subtle);
+		border-radius: var(--radius-md);
+		color: var(--text-primary);
+		font-size: 14px;
 
-		background-color: rgb(211, 211, 211, 0.8);
-		border: 2px ridge rgba(211, 211, 211, 1);
-		border-radius: 5px;
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		transition: all var(--transition-base)
+	}
+	.emailInput::placeholder, .pwdInput::placeholder {
+		color: var(--text-muted);
 	}
 	.emailInput:focus, .pwdInput:focus {
-    outline: 2px solid rgba(255, 255, 255, 0.8);
+		border-color: var(--color-accent);
+  		box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+		background-color: var(--surface-dark);
 	}
 
 
@@ -55,51 +70,71 @@
 	.buttonWrapper {
 		display: flex;
 		flex-direction: column;
-		gap: 12px;
-
-		align-items: center;
+		gap: var(--space-md);
+		margin-top: var(--space-lg);
 	}
 
 
 	.loginButton, .signupButton {
-		width: 50%;
-		padding: 10px;
-		font-size: 18px;
-		font-weight: bold;
-		color: #e0e0e0;
-		
+		padding: var(--space-md);
 
-		background-color: rgb(68, 81, 73);
-		border: 3px groove rgb(113, 113, 113, 0.682);
-		border-radius: 5px;
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-	}
+		background-color: var(--color-primary);
+		color: var(--surface-light);
+		border: none;
+		border-radius: var(--radius-md);
 
-	.loginButton:hover, .signupButton:hover {
-		background-color: rgb(85, 102, 92);
+		font-size: 16px;
+		font-weight: 600;
 		cursor: pointer;
+		
+		transition: all var(--transition-base);
 	}
-
 	.loginButton:disabled, .signupButton:disabled {
-		opacity: 0.6;
+		opacity: 0.5;
 		cursor: not-allowed;
 	}
+	.loginButton:active:not(:disabled), .signupButton:active:not(:disabled) {
+		transform: translateY(0) scale(0.97);
+	}
+
+	.signupButton {
+		background-color: transparent;
+		border: 2px solid var(--color-accent);
+		color: var(--color-accent);
+	}
+	.signupButton:hover:not(:disabled) {
+		background-color: rgba(0, 212, 255, 0.1);
+		box-shadow: var(--shadow-lg);
+		transform: translateY(-2px);
+	}
+
+	.loginButton:hover:not(:disabled) {
+		background-color: var(--color-primary-light);
+		box-shadow: var(--shadow-lg);
+		transform: translateY(-2px);
+	}
+
+
 
 /* ERROR MESSAGE */
 	.error {
-		color: #ff6b6b;
-		background-color: rgba(255, 107, 107, 0.1);
-		height: 50px;
-		padding: 4px;
-		margin-top: 6px;
-		border-radius: 4px;
-		border: 2px solid #ff6b6b;
-		font-weight: 500;
+		padding: var(--space-md);
+		margin-top: var(--space-md);
+
+		background-color: #ff6b6b1a;
+		border: 1px solid var(--color-error);
+		border-radius: var(--radius-md);
+		color: #ff8a80;
+
 		font-size: 14px;
+		font-weight: 500;
 		text-align: center;
-	}
-	.errorShake {
 		animation: shake 300ms ease;
+	}
+	@keyframes shake {
+		0%, 100% { transform: translateX(0); }
+		25% { transform: translateX(-5px); }
+		75% { transform: translateX(5px); }
 	}
 
 	.loader {
@@ -111,29 +146,19 @@
 		display: inline-block;
 		animation: rotation 1s linear infinite;
 	}
-
 	@keyframes rotation {
 		0% { transform: rotate(0deg) }
 		100% { transform: rotate(360deg) }
 	}
-	@keyframes shake {
-  		0%, 100% { transform: translateX(0) }
-		25% { transform: translateX(-5px) }
-		75% { transform: translateX(5px) }
+
+@media (max-width: 500px) {
+	.loginContainer {
+		max-width: 70%;
+		padding: var(--space-lg) var(--space-md);
+		margin: var(--space-md);
 	}
 
-	@media (max-width: 480px) {
-		.loginContainer {
-			width: 90%;
-			height: auto;
-			padding: 30px 5%;
-		}
-
-		.heading {
-			font-size: 24px;
-		}
-
-		.loginButton, .signupButton {
-			width: 80%;
-		}
+	.heading {
+		font-size: 24px;
 	}
+}

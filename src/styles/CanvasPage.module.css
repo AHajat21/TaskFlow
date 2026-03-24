@@ -2,30 +2,57 @@
 	width: 100vw;
 	height: 100vh;
 	position: relative;
-	background-color: #f8f9fa;
+	overflow: hidden;
+
+	background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+	background-attachment: fixed;
 }
 
 .errorBanner {
 	position: fixed;
-	top: 60px;
+	top: 70px;
 	left: 50%;
 	transform: translateX(-50%);
-	background-color: #f44336;
+	z-index: var(--z-notification);
+
+	display: flex;
+	align-items: center;
+	gap: var(--space-md);
+	padding: var(--space-md) var(--space-lg);
+
+	background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
 	color: white;
-	padding: 16px 24px;
 	border-radius: 4px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-	z-index: 1001;
-	animation: slideDown 300ms ease;
+	box-shadow: var(--shadow-lg);
+
+	animation: slideDown var(--transition-slow) ease-out, slideUp var(--transition-slow) ease 2.7s forwards
+}
+
+.errorBanner p {
+	margin: 0;
 }
 
 @keyframes slideDown {
-  from {
-    transform: translate(-50%, -100%);
-    opacity: 0;
-  }
-  to {
-    transform:  translate(-50%, 0);
-    opacity: 1;
-  }
+	from {
+   	transform: translate(-50%, -100%);
+   	opacity: 0;
+	}
+	to {
+   	transform:  translate(-50%, 0);
+   	opacity: 1;
+	}
+}
+
+@keyframes slideUp {
+	to {
+		opacity: 0;
+		transform: translate(-50%, -20px);
+	}
+}
+
+@media (max-width: 768px) {
+	.canvasStage::before {
+		background-size: 20px 20px;
+		opacity: 0.3;
+	}
 }

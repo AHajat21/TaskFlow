@@ -1,16 +1,20 @@
 // Add a last updated
-// no empty project names
+// No empty project names
 
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import toast, {Toaster} from 'react-hot-toast'
+
 import { useUser } from '../context/UserContext'
 import { fetchProjectsSupa, createProjectSupa, deleteProjectSupa, renameProjectSupa } from '../utils/supabaseQueries'
-
 import { validateProjectName } from '../utils/validation'
-import styles from "../styles/Dashboard.module.css"
+
 import ProjectCard from '../components/ProjectCard'
 import CreateProjectModal from '../components/CreateProjectModal'
 import DeleteProjectModal from '../components/DeleteProjectModal'
+
+import styles from "../styles/Dashboard.module.css"
+
 
 const Dashboard = () => {
 	const { user } = useUser()
@@ -58,9 +62,7 @@ const Dashboard = () => {
     		)
 		} catch (err) {
 			setError("Failed to rename project")
-		}
-
-		
+		}		
 	}
 	const deleteProject = async () => {
 		await deleteProjectSupa(deletePopupId)
@@ -74,7 +76,7 @@ const Dashboard = () => {
 
   	return (
 		<div className={styles.page}>
-			<aside className={styles.sidebar}>...</aside>
+			<aside className={styles.sidebar}></aside>
 			
 			{/* MODALS */}
 			<CreateProjectModal open={isCreatePopupOpen} setOpen={setIsCreatePopupOpen} createProject={createProject} />
