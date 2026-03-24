@@ -15,7 +15,6 @@ const Login = () => {
 
 	const navigate = useNavigate();
 
-
 	const isDisabled = loading || !email || !password;
 
 
@@ -27,7 +26,6 @@ const Login = () => {
 
 	const handleAuthSubmit = async (authMethod) => {
 		let errorMessage = null
-
 		if (password.length < 6) errorMessage = "Password must be at least 6 characters";
 		if (!email.includes("@") || !email.includes(".")) errorMessage = "Unable to validate email address: invalid format";
 		
@@ -97,9 +95,8 @@ const Login = () => {
 					</button>
 				</div>
 			</div>
-			<Toaster />
 		</div>
-  )
+	)
 }
 
 export default Login

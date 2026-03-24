@@ -5,6 +5,7 @@
 // 	> Add a grid background ( background-image: radial-gradient(#d1d1d1 1px, transparent 1px); background-size: 10px 10px;)
 import {useEffect, useState, useRef} from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import toast, { Toaster } from 'react-hot-toast'
 
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch"
 
@@ -29,6 +30,10 @@ const CanvasPage = () => {
 	const [highestZIndex, setHighestZIndex] = useState(1);
 	const [selectedNodeData, setSelectedNodeData] = useState({})
 
+	useEffect(() => {
+		if (!error) return
+		toast.error(error)
+	}, [error])
 
 	// LOAD PROJECT INITIALY
 	useEffect(() => {
@@ -141,11 +146,13 @@ const CanvasPage = () => {
 
   	return (
 		<>
-			{error && (
-				<div className={styles.errorBanner}>
-					<p>{error}</p>
-				</div>
-			)}
+			<Toaster
+	  			position="top-right"
+				reverseOrder={false}
+				toastOptions={{
+					duration: 4000
+				}}
+			/>
 
 			{/* CANVAS */}
 			<div className={styles.canvasStage}>

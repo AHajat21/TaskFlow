@@ -27,6 +27,11 @@ const Dashboard = () => {
 	const [deletePopupId, setDeletePopupId] = useState(null)
 
 	useEffect(() => {
+		if (!error) return
+		toast.error(error)
+	}, [error])
+
+	useEffect(() => {
 		const loadProjects = async () => {
 			const projects = await fetchProjectsSupa(user?.id)
 			setProjectsArray(projects)
@@ -50,6 +55,7 @@ const Dashboard = () => {
 			setIsCreatePopupOpen(false)
 			const newProject = await createProjectSupa(projectName.trim())
 			setProjectsArray((prev) => [...prev, newProject[0]])
+			toast.success("Project created successfully")
 		} catch (err) {
 			setError("Failed to create project")
 		}
@@ -60,6 +66,7 @@ const Dashboard = () => {
 			setProjectsArray(prev => 
       		prev.map(p => p.id === id ? { ...p, name: name.trim() } : p)
     		)
+			toast.success("Project renamed successfuly")
 		} catch (err) {
 			setError("Failed to rename project")
 		}		
@@ -68,6 +75,7 @@ const Dashboard = () => {
 		await deleteProjectSupa(deletePopupId)
 		setProjectsArray(prev => prev.filter(p => p.id !== deletePopupId))
 		setDeletePopupId(null)
+		toast.success("Project deleted successfully")
 	}
 	
 	const goToProject = (projectId) => {
@@ -76,14 +84,21 @@ const Dashboard = () => {
 
   	return (
 		<div className={styles.page}>
-			<aside className={styles.sidebar}></aside>
-			
 			{/* MODALS */}
 			<CreateProjectModal open={isCreatePopupOpen} setOpen={setIsCreatePopupOpen} createProject={createProject} />
 			<DeleteProjectModal open={deletePopupId} setOpen={setDeletePopupId} deleteProject={deleteProject} />
+			{/* TOASTER */}
+			<Toaster
+	  			position="top-right"
+				reverseOrder={false}
+			/>
+
+			{/* SIDEBAR */}
+			<aside className={styles.sidebar}></aside>
+
 
 			<div className={styles.heading}>
-				<h1>  Dashboard</h1>
+				<h1>Dashboard</h1>
 				<hr />
 				<button onClick={() => setIsCreatePopupOpen(true)}>✚</button>
 			</div>
@@ -95,11 +110,8 @@ const Dashboard = () => {
 				<h4 className={styles.emptyState}>
 					No projects yet. Create your first one 🚀
 				</h4>
-
 			:
-
 				<div className={styles.projectsList}>
-				
 					{projectsArray.map((project) => (
 						<ProjectCard
 							key={project.id}
@@ -112,8 +124,6 @@ const Dashboard = () => {
 					))}
 				</div>
 			}
-
-			
 	 	</div>
 
   	)

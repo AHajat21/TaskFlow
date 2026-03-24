@@ -8,47 +8,7 @@
 	background-attachment: fixed;
 }
 
-.errorBanner {
-	position: fixed;
-	top: 70px;
-	left: 50%;
-	transform: translateX(-50%);
-	z-index: var(--z-notification);
 
-	display: flex;
-	align-items: center;
-	gap: var(--space-md);
-	padding: var(--space-md) var(--space-lg);
-
-	background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
-	color: white;
-	border-radius: 4px;
-	box-shadow: var(--shadow-lg);
-
-	animation: slideDown var(--transition-slow) ease-out, slideUp var(--transition-slow) ease 2.7s forwards
-}
-
-.errorBanner p {
-	margin: 0;
-}
-
-@keyframes slideDown {
-	from {
-   	transform: translate(-50%, -100%);
-   	opacity: 0;
-	}
-	to {
-   	transform:  translate(-50%, 0);
-   	opacity: 1;
-	}
-}
-
-@keyframes slideUp {
-	to {
-		opacity: 0;
-		transform: translate(-50%, -20px);
-	}
-}
 
 @media (max-width: 768px) {
 	.canvasStage::before {

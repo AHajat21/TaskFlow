@@ -77,29 +77,6 @@
 }
 
 
-.errorBanner {
-	position: fixed;
-	top: 60px;
-	right: 5px;
-	background-color: #f44336;
-	color: white;
-	padding: 16px 24px;
-	border-radius: 4px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-	z-index: 1001;
-	animation: slideDown var(--transition-base) ease-out;
-}
-@keyframes slideDown {
-	from {
-   	transform: translateY(-100%);
-   	opacity: 0;
-	}
-	to {
-   	transform:  translateY(0);
-   	opacity: 1;
-	}
-}
-
 
 @media (max-width: 1024px) {
   .projectsList {
