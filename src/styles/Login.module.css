@@ -71,7 +71,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-md);
-		margin-top: var(--space-lg);
 	}
 
 
@@ -115,12 +114,8 @@
 	}
 
 
-
 /* ERROR MESSAGE */
 	.error {
-		padding: var(--space-md);
-		margin-top: var(--space-md);
-
 		background-color: #ff6b6b1a;
 		border: 1px solid var(--color-error);
 		border-radius: var(--radius-md);
@@ -131,6 +126,11 @@
 		text-align: center;
 		animation: shake 300ms ease;
 	}
+	.errorPlaceholder {
+		padding: var(--space-sm);
+		margin-top: var(--space-md);
+		height: 36px;
+	}
 	@keyframes shake {
 		0%, 100% { transform: translateX(0); }
 		25% { transform: translateX(-5px); }
@@ -140,6 +140,7 @@
 	.loader {
 		width: 24px;
 		height: 24px;
+		align-self: center;
 		border: 2px solid #FFF;
 		border-bottom-color: transparent;
 		border-radius: 50%;
@@ -151,7 +152,13 @@
 		100% { transform: rotate(360deg) }
 	}
 
+
+
 @media (max-width: 500px) {
+	.background {
+		overflow: scroll;
+	}
+
 	.loginContainer {
 		max-width: 70%;
 		padding: var(--space-lg) var(--space-md);

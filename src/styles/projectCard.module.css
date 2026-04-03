@@ -31,7 +31,6 @@
 	color: var(--text-secondary);
 	font-size: 14px;
 	line-height: 1.5;
-	margin-bottom: var(--space-md);
   
 	flex-grow: 1;
 }
@@ -91,8 +90,14 @@
 	transform: scale(0.95);
 }
 
+.projectDesc {
+	margin-bottom: var(--space-md);
+}
+
 .projectTimestamps {
 	position: relative;
+	display: flex;
+	flex-direction: column;
 	margin-top: auto;
 
 	color: var(--text-muted);

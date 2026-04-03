@@ -13,7 +13,7 @@ import { useTransformContext } from 'react-zoom-pan-pinch';
 
 import styles from '../styles/node.module.css'
 
-const Node = ({nodeData , updateNode, onDelete, nodeClicked, isSelected }) => {
+const Node = ({nodeData, updateNode, onDelete, nodeClicked, isSelected}) => {
 	const { id, type, name, pos_x, pos_y, pos_z, customisation, content} = nodeData
 	const [localContent, setLocalContent] = useState(content)
 	// NOT to access node
@@ -45,9 +45,7 @@ const Node = ({nodeData , updateNode, onDelete, nodeClicked, isSelected }) => {
 		width: customisation.width + "px",
 		height: customisation.height + "px",
 		rotate: customisation.rotate + "deg",
-
 		pointerEvent: customisation.isLocked ? "none" : "auto" ,
-
 		boxShadow: isSelected 
     		? `0 0 0 3px #27579fb9, 0 4px 12px rgba(0,0,0,0.2)` 
     		: `0 2px 8px rgba(0,0,0,0.12)`,
@@ -60,7 +58,6 @@ const Node = ({nodeData , updateNode, onDelete, nodeClicked, isSelected }) => {
 		textAlign: customisation.textAlign,
 		fontSize: customisation.fontSize + "px",
 	}
-	
 
 	// DEBOUNCING
 	const handleContentChange = (newContent) => {

@@ -1,18 +1,19 @@
 import { supabase } from "../helper/supabaseClient";
 
-// ---------------- Boards ----------------
+// ---------------- Projects ----------------
 
 export const fetchProjectsSupa = async (userId) => {
 	const {data, error} = await supabase
 		.from("Projects")
 		.select()
 		.eq("user_id", userId)
+		.order('updated_at', {ascending: false})
 
 	if (error) throw error;
 	return data;
 }
 
-export const fetchProjectByIdSupa = async (projectId) => {
+export const fetchProjectDataSupa = async (projectId) => {
 	const {data, error} = await supabase
 		.from("Projects")
 		.select()
@@ -33,6 +34,15 @@ export const createProjectSupa = async (projectName) => {
 	return data;
 }
 
+export const updateProjectSupa = async (projectId, update) => {
+	const { error } = await supabase 
+		.from("Projects")
+		.update(update)
+		.eq("id", projectId)
+	
+	if (error) throw error;
+}
+
 export const deleteProjectSupa = async (projectId) => {
   	const { error } = await supabase
    	.from("Projects")
@@ -42,14 +52,7 @@ export const deleteProjectSupa = async (projectId) => {
 	if (error) throw error;
 }
 
-export const renameProjectSupa = async (projectId, newName) => {
-	const { error } = await supabase 
-		.from("Projects")
-		.update({name: newName})
-		.eq("id", projectId)
-	
-	if (error) throw error;
-}
+
 
 // ---------------- Components -----------------
 
@@ -94,40 +97,3 @@ export async function deleteComponentSupa(compId) {
 	if (error) throw error;
 	return data
 }
-
-/* ---------------- Connections ----------------
-
-// Create a connection between two nodes
-export async function createConnection(boardId, fromNode, toNode) {
-  const { data, error } = await supabase
-    .from("connections")
-    .insert([{ board_id: boardId, from_node: fromNode, to_node: toNode }])
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data;
-}
-
-// Get all connections for a board
-export async function getConnections(boardId) {
-  const { data, error } = await supabase
-    .from("connections")
-    .select("*")
-    .eq("board_id", boardId);
-
-  if (error) throw error;
-  return data;
-}
-
-// Delete a connection
-export async function deleteConnection(id) {
-  const { error } = await supabase
-    .from("connections")
-    .delete()
-    .eq("id", id);
-
-  if (error) throw error;
-}
-
-*/

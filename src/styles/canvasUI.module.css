@@ -21,7 +21,7 @@
 	box-shadow: var(--shadow-md);
 
 
-	button, input {
+	button, p {
 		padding: var(--space-sm);
 
 		background-color: transparent;
@@ -41,19 +41,19 @@
 		color: var(--color-accent);
 	}
 
-	input {
+	p {
 		width: 50px;
 		text-align: center;
 	}
-	input:focus {
-		outline: none;
+	p:hover {
 		border-color: var(--color-accent);
 		background-color: rgba(0, 212, 255, 0.05);
+		color: var(--color-accent);
 	}
 }
 
 
-.nodePanel {
+.nodePropertiesPanel {
 	position: fixed;
 	right: 0;
 	width: 30%;
@@ -67,10 +67,10 @@
 	z-index: var(--z-fixed);
 
 	transform: translateX(100%);
-	transition: all var(--transition-base) ease-out;
+	transition: transform 200ms ease-out;
 
 
-	.nodePanelHandle {
+	.nodePropertiesPanelHandle {
 		position: absolute;
 		left: -32px;
 		top: 50%;
@@ -90,20 +90,12 @@
 		cursor: pointer;
 		transition: all var(--transition-base);
 	}
-	.nodePanelHandle:hover {
+	.nodePropertiesPanelHandle:hover {
 		background-color: var(--surface-glass-hover);
 		border-color: var(--color-primary-light);
 		color: var(--color-primary-light);
 	}
 
-	.nodeName {
-		text-align: center;
-		padding: var(--space-md);
-		color: var(--text-primary);
-		font-size: 16px;
-		font-weight: 600;
-		border-bottom: 1px solid var(--border-subtle);
-	}
 
 	.lockNodeBtn {
 		position: absolute;
@@ -127,6 +119,20 @@
 		background: var(--surface-glass-hover);
 		border-color: var(--color-accent);
 	}
+
+	.nodeName {
+		margin-top: var(--space-md);
+		text-align: center;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		padding: var(--space-md);
+		color: var(--text-primary);
+		font-size: 16px;
+		font-weight: 600;
+		border-bottom: 1px solid var(--border-subtle);
+	}
+
+
 
 	.property {
 		display: flex;
@@ -255,13 +261,13 @@
 		text-align: center;
 	}
 }
-.openedPanel {
+.openedProperties {
 	transform: translateX(0%);
 }
 
 
-.nodeList {
-	z-index: 10;
+.nodeListPanel {
+	z-index: var(--z-fixed);
 	position: fixed;
 	left: 0;
 	height: 80vh;
@@ -269,14 +275,15 @@
 	min-width: 150px;
 
 	border: 1px solid black;
-	background-color: darkgray;
+	background-color: var(--color-secondary-light);
+	color: var(--text-secondary);
 
 	/* TRANSITION */
 	transform: translateX(-100%);
 	transition: transform 200ms ease-out;
 
 
-	.nodeListHandle {
+	.nodeListPanelHandle {
 		position: absolute;
 		right: -32px;
 		top: 50%;
@@ -296,10 +303,59 @@
 		cursor: pointer;
 		transition: all var(--transition-base);
 	}
-	.nodeListHandle:hover {
+	.nodeListPanelHandle:hover {
 		background-color: var(--surface-glass-hover);
 		border-color: var(--color-primary-light);
 		color: var(--color-primary-light);
+	}
+
+
+	h3 {
+		text-align: center;
+		color: var(--text-primary);
+		margin: var(--space-sm);
+	}
+
+	hr {
+		margin-bottom: var(--space-sm);
+	}
+
+	.nodeList {
+		display: flex;
+		flex-direction: column;
+		padding: var(--space-xs);
+		overflow-y: scroll;
+
+
+		.nodeBar {
+			display: flex;
+			justify-content: space-between;
+			border-bottom: 3px solid black;
+			border-image: linear-gradient(90deg, var(--color-info), var(--color-primary-light) 30%) 1;
+			padding: var(--space-xs);
+
+
+			p {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				width: calc(100%-60px);
+				font-size: 14px;
+			}
+			.buttonWrapper {
+				display: flex;
+
+				
+				button {
+					margin: 0 1px;
+					background-color: var(--surface-glass-hover);
+					border-radius: var(--radius-sm);
+				}
+			}
+		}
+		
+		.selectedNodeBar {
+			color: yellow;
+		}
 	}
 }
 .openedList {
@@ -314,8 +370,6 @@
 	transform: translateX(-50%);
 	z-index: var(--z-fixed);
 
-	display: flex;
-	gap: 2px;
 	padding: 1px;
 
 	background-color: var(--surface-dark);
@@ -325,11 +379,11 @@
 
 	
 	div {
-		flex: 1;
 		padding: var(--space-sm) var(--space-md);
 
 		background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-info) 100%);
 		color: var(--color-secondary);
+		border-radius: var(--radius-md);
 
 		text-align: center;
 		font-weight: 600;
@@ -338,24 +392,17 @@
 
 		transition: all var(--transition-fast);
 	}
-	div:first-child {
-		border-radius: var(--radius-md) 0 0 var(--radius-md);
-	}
-	div:last-child {
-		border-radius: 0 var(--radius-md) var(--radius-md) 0;
-	}
 	div:hover {
 		opacity: 0.8;
 		transform: scale(1.02);
 	}
-
-	.controlPanel div:active {
+	div:active {
 		transform: scale(0.95);
 	}
 }
 
 @media (max-width: 850px) {
-	.nodePanel {
+	.nodePropertiesPanel {
 		.s2 {
 			.subProperty {
 				margin-left: var(--space-xs);
@@ -363,21 +410,21 @@
 		}
 	}
 
-	.nodeList {
+	.nodeListPanel {
 		width: 25%;
 		min-width: 200px;
 	}
 }
 
 @media (max-width: 576px) {
-	.nodePanel {
-		width: 100%;
+	.nodePropertiesPanel {
+		width: 80%;
 		min-width: unset;
 		max-width: unset;
 	}
 
-	.nodeList {
-		width: 100%;
+	.nodeListPanel {
+		width: 80%;
 		min-width: unset;
 		max-width: unset;
 	}

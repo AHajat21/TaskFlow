@@ -1,12 +1,10 @@
 // Add project name and account to header
 
-// OPTIONAL
-// 	> Update local state immediately onStop, to avoid snap issue.
-// 	> Add a grid background ( background-image: radial-gradient(#d1d1d1 1px, transparent 1px); background-size: 10px 10px;)
 import {useEffect, useState, useRef} from 'react'
+
 import { useParams, useNavigate } from 'react-router-dom'
 import toast, { Toaster } from 'react-hot-toast'
-
+import { useControls, useTransformContext, useTransformEffect } from "react-zoom-pan-pinch"
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch"
 
 import { useUser } from '../context/UserContext.jsx'
@@ -14,18 +12,20 @@ import CanvasUI from "../components/CanvasUI.jsx"
 import Node from '../components/Node.jsx'
 
 import { supabase } from '../helper/supabaseClient.js'
-import { fetchProjectByIdSupa, fetchComponentsSupa, createComponentSupa, updateComponentSupa, deleteComponentSupa } from '../utils/supabaseQueries.js'
+import { fetchProjectDataSupa, updateProjectSupa, fetchComponentsSupa, createComponentSupa, updateComponentSupa, deleteComponentSupa } from '../utils/supabaseQueries.js'
 
 import styles from "../styles/CanvasPage.module.css"
 
 const CanvasPage = () => {
 	const { user } = useUser()
 	const navigate = useNavigate()
+
 	const username = user ? user.email.split("@")[0] : "Guest"
 	const { projectId } = useParams()
 	const [error, setError] = useState(null)
 
 	const [componentsArray, setComponentsArray] = useState([])
+	const [updatesList, setUpdatesList] = useState([])
 
 	const [highestZIndex, setHighestZIndex] = useState(1);
 	const [selectedNodeData, setSelectedNodeData] = useState({})
@@ -42,15 +42,16 @@ const CanvasPage = () => {
 		// ACCESS PROJECT DATA
 		const loadProjectData = async () => {
 			try {
-				const projectData = await fetchProjectByIdSupa(projectId)
+				const projectData = await fetchProjectDataSupa(projectId)
 				if (!projectData) {
 					setError("Project not found, redirecting to dashboard")
 					setTimeout(() => navigate(`/${username}`), 4000)
       			return
 				}
+				updateProjectSupa(projectId, {updated_at: new Date()})
 				setError(null)
-			} catch (err) {		
-				setError("Project not found, redirecting to dashboard")
+			} catch (err) {
+				setError(`${err}, redirecting to dashboard`)
 				setTimeout(() => navigate(`/${username}`), 4000)
 			}	
 		}
@@ -64,7 +65,7 @@ const CanvasPage = () => {
 		fetchComponents()
 
 		// REALTIME SUBSCRIPTION
-		const channel = supabase.channel('room-' + projectId + '-project')
+		const channel = supabase.channel('project-' + projectId + '-components')
 		channel.on(
 			'postgres_changes',
 			{
@@ -130,8 +131,14 @@ const CanvasPage = () => {
 		setComponentsArray(prev => prev.map(comp => 
 			(comp.id === compId) ? { ...comp, ...updates} : comp
 		));
-		
-		const u = await updateComponentSupa(compId, updates)
+
+		try {
+			updateComponentSupa(compId, updates)
+		} catch (error) {
+			const revertedComponent = await fetchComponentsSupa(projectId)
+			setComponentsArray(revertedComponent)
+			setError("Failed to update node.")
+		}
 	}
 	const deleteNode = async (compId) => {
 		const d = await deleteComponentSupa(compId)
@@ -143,6 +150,7 @@ const CanvasPage = () => {
 		
 		updateComponentSupa(compData.id, {pos_z: highestZIndex+1})
 	}
+
 
   	return (
 		<>
@@ -167,22 +175,21 @@ const CanvasPage = () => {
 					wheel={{smoothStep: .02}}
 				>
 					{/* UI OVERLAP */}
-					<CanvasUI nodeData={selectedNodeData} addNode={addNode} updateNode={updateNode} />
+					<CanvasUI
+						compArray={componentsArray}
+						selectedNodeData={selectedNodeData}
+						setSelectedNodeData={setSelectedNodeData}
+						nodeFunctions={{addNode, updateNode, deleteNode}}
+					/>
 
 					{/* COMPONENT MAPPING */}
 					<TransformComponent wrapperStyle={{"width": "100vw", "height": "100vh"}}>
-
-
 							{componentsArray.map((component) => (
-								<Node key={component.id} nodeData={component} updateNode={updateNode} onDelete={deleteNode} nodeClicked={bringNodeToFront} isSelected={(selectedNodeData.id == component.id)} />
+								<Node key={component.id} nodeData={component} updateNode={updateNode} onDelete={deleteNode} nodeClicked={bringNodeToFront} isSelected={(selectedNodeData.id == component.id)}/>
 							))}
 					</TransformComponent>
-
 				</TransformWrapper>
 			</div>
-
-			
-			
 		</>
   	)
 }

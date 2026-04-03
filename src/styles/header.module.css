@@ -1,7 +1,7 @@
 .header {
 	display: flex;
-	align-items: flex-end;
 	justify-content: space-between;
+	align-items: center;
 	padding: var(--space-md) var(--space-lg);
 	
 	position: sticky;
@@ -16,22 +16,24 @@
 	backdrop-filter: blur(3px);
 }
 
-.title {
-	/* display: flex;
+.userWrapper, .siteWrapper {
+	display: flex;
 	align-items: center;
-	gap: var(--space-sm); */
-	align-self: center;
+	gap: var(--space-md);
+}
+
+.title {
 	font-size: 12px;
-	font-weight: 600;
 	color: var(--text-secondary);
-	text-shadow: var(--shadow-sm);
+	text-shadow: var(--shadow-xl);
 	text-decoration: none;
 }
 .title:hover {
 	opacity: 0.8;
-
 	transition: opacity var(--transition-fast);
 }
+
+
 
 
 .logoutButton, .loginLink, .aboutLink {
@@ -40,20 +42,15 @@
 	font-weight: 500;
 }
 
-.loginLink, .aboutLink {
+.loginLink, .aboutLink, .userWrapper p {
 	color: var(--text-dark-secondary);
 	text-decoration: none;
-	margin-left: auto;
 	padding: var(--space-sm);
 	border-radius: var(--radius-md);
 }
 .loginLink:hover, .aboutLink:hover {
 	background-color: var(--surface-glass-hover);
 	text-decoration: underline;
-}
-
-.aboutLink {
-	margin-left: var(--space-md)
 }
 
 .logoutButton {
@@ -76,16 +73,21 @@
 	transform: scale(0.97);
 }
 
-@media (max-width: 768px) {
+
+@media (max-width: 600px) {
 	.header {
    	padding: var(--space-md);
 		gap: var(--space-md);
+	}
+
+	.userWrapper {
+		gap: var(--space-xl);
 	}
   
 	.title {
    	font-size: 16px;
 	}
-  
+
 	.logoutButton,
 	.loginLink,
 	.aboutLink {

@@ -1,43 +1,61 @@
-// Set bounds for UI controls position e.g. when resizing window
-// Truncate scale value in input field. Also change scale amount
-// min dimensions (or optimise)
-// Add debouncing for color changing
 // Undo/Redo
-// Add alt/title attribute for every button
-// customisible pixel snap drag&drop
 
-// OPTIONAL
-// 	> Add alt tags for when hovering over buttons
-// 	> Make zoom/scale more efficient. shouldn't re-render on every useTransformEffect(debouncing)
 import { useEffect, useState, useRef } from "react"
 
 import { useControls, useTransformContext, useTransformEffect } from "react-zoom-pan-pinch"
 import { MuiColorInput } from 'mui-color-input'
+import toast from "react-hot-toast"
+
+import { validateNumberInput } from "../utils/validation"
+import ConfiguredInput from "./Canvas/ConfiguredInput"
+import { INPUT_CONFIGS } from "../utils/inputConfigs"
 
 import styles from "../styles/canvasUI.module.css"
 
-const CanvasUI = ( {nodeData, addNode, updateNode} ) => {
-	const { id, type, name, pos_x, pos_y, pos_z, customisation, content} = nodeData
+
+const CanvasUI = ( {compArray, selectedNodeData, setSelectedNodeData, nodeFunctions} ) => {
+	const { id, type, name, pos_x, pos_y, pos_z, customisation} = selectedNodeData
+	const {addNode, updateNode, deleteNode} = nodeFunctions
+	
+
+	const colorTimerRef = useRef(null)
 	const inputZoomRef = useRef(null);
 
-	const [pos, setPos] = useState({x: 0, y: 0, z: 0})
-	const [dimensions, setDimensions] = useState({w: 0, h: 0, r: 0})
-	const [border, setBorder] = useState({thickness: 0, radius: 0})
-	const [colors, setColors] = useState({textColor: "", backgroundColor: "", borderColor: ""})
+
+	const [error, setError] = useState(null)
+
+	const [pos, setPos] = useState({
+		x: pos_x ?? 0,
+		y: pos_y ?? 0,
+		z: pos_z ?? 0
+	})
+	const [dimensions, setDimensions] = useState({
+		w: customisation?.width ?? 0,
+		h: customisation?.height ?? 0,
+		r: customisation?.rotate ?? 0
+	})
+	const [border, setBorder] = useState({
+		thickness: customisation?.borderThickness ?? 0,
+		radius: customisation?.borderRadius ?? 0
+	})
+	const [colors, setColors] = useState({
+		textColor: customisation?.textColor ?? "#ffffffff",
+		backgroundColor: customisation?.backgroundColor ?? "#ffffffff",
+		borderColor: customisation?.borderColor ?? "#ffffffff"
+	})
 	
-	const contentTimerRef = useRef(null)
 
-	const [nodePanelVisible, setNodePanelVisible] = useState(false)
-	const [nodeListVisible, setNodeListVisible] = useState(false)
+	const [nodePropertiesPanelVisible, setnodePropertiesPanelVisible] = useState(false)
+	const [nodeListPanelVisible, setnodeListPanelVisible] = useState(false)
 
-	const { zoomIn, zoomOut, setTransform, resetTransform } = useControls()
+	const { zoomIn, zoomOut, resetTransform, setTransform } = useControls()
 	const context = useTransformContext()
 
 
+	useEffect(() => {
+		toast.error(error)
+	}, [error])
 
-	useTransformEffect(({ state }) => {
-		inputZoomRef.current.value = state.scale
-	})
 	useEffect(() => {
 		setPos({
    		x: pos_x ?? 0,
@@ -63,70 +81,70 @@ const CanvasUI = ( {nodeData, addNode, updateNode} ) => {
 	}, [customisation])
 
 	// DEBOUNCING
-	const handleContentChange = (newState, field) => {
-		setColors(prev => ({ ...prev, [field]: newState}))
+	const handleColorChange = (newColor, field) => {
+		setColors(prev => ({ ...prev, [field]: newColor}))
 
-		if (contentTimerRef.current) clearTimeout(contentTimerRef.current)
-		contentTimerRef.current = setTimeout(() => {
-			updateNode(id, {customisation: {...customisation, [field]: newState}})
-		}
-		, 200)
+		if (colorTimerRef.current) clearTimeout(colorTimerRef.current)
+		colorTimerRef.current = setTimeout(() => {
+			updateNode(id, {customisation: {...customisation, [field]: newColor}})
+		}, 200)
 	}
 
 	return (
 		<div className={styles.uiOverlap}>
 
 		{/* ZOOM TOOLS */}
-		{/* Make into a continuous shape/grid */}
 		<div className={styles.zoomTools}>
-			<button onClick={() => {zoomIn()}}>+</button>
-			<input
-				ref={inputZoomRef}
-
-				defaultValue={1}
-				onBlur={(e) => setTransform(context.transformState.positionX, context.transformState.positionY, e.target.value)}
-				onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
-			/>
-			<button onClick={() => {zoomOut()}}>-</button>
-			<button onClick={() => {resetTransform()}}>R</button>
+			<button onClick={() => zoomOut(0.4)} title="Zoom out">-</button>
+			<button onClick={() => zoomIn(0.4)} title="Zoom in">+</button>
+			<button onClick={() => resetTransform()} title="Reset zoom">R</button>
 		</div>
 
 
 
 		{/* NODE PANEL */}
 		{(id === undefined) ?
-		<div className={`${styles.nodePanel} ${nodePanelVisible ? styles.openedPanel : "" }`}>
+		<div className={`${styles.nodePropertiesPanel} ${nodePropertiesPanelVisible ? styles.openedProperties : "" }`}>
 			{/* PANEL HANDEL */}
-			<button className={styles.nodePanelHandle} onClick={() => setNodePanelVisible(!nodePanelVisible)}>
-				{(nodePanelVisible) ? ">" : "<"}
+			<button className={styles.nodePropertiesPanelHandle} onClick={() => setnodePropertiesPanelVisible(!nodePropertiesPanelVisible)}>
+				{(nodePropertiesPanelVisible) ? ">" : "<"}
 			</button>
 
 			<h3 className={styles.nodeName}>Select a node for details</h3>
 		</div>
 		:
-		<div className={`${styles.nodePanel} ${nodePanelVisible ? styles.openedPanel : "" }`}>
+		<div className={`${styles.nodePropertiesPanel} ${nodePropertiesPanelVisible ? styles.openedProperties : "" }`}>
 			{/* PANEL HANDEL */}
-			<button className={styles.nodePanelHandle} onClick={() => setNodePanelVisible(!nodePanelVisible)}>
-				{(nodePanelVisible) ? ">" : "<"}
+			<button
+				className={styles.nodePropertiesPanelHandle}
+				onClick={() => setnodePropertiesPanelVisible(!nodePropertiesPanelVisible)}
+				title="Toggle panel"
+			>
+				{(nodePropertiesPanelVisible) ? ">" : "<"}
 			</button>
 			
-
 			
-			<button onClick={() => updateNode(id, {customisation: {...customisation, isLocked: !customisation.isLocked}})} className={styles.lockNodeBtn}>
+			<button
+				className={styles.lockNodeBtn}
+				onClick={() => updateNode(id, {customisation: {...customisation, isLocked: !customisation.isLocked}})}
+				title={customisation.isLocked ? 'Unlock node' : 'Lock node'}
+			>
 				{customisation.isLocked ? '🔒' : '🔓'}
 			</button>
-			<h3 className={styles.nodeName}>{(name == "") ? "Untitled" : name }</h3>
+
+			<h3 className={styles.nodeName}>{name || "Untitled" }</h3>
 			<hr />
 			
 			{/* SECTION 1 */}
 			<div className={styles.s1}>
-				<input className={styles.fontSize} type="text"
+				<input className={styles.fontSize} type="number" inputMode="numeric"
 					defaultValue={customisation.fontSize}
-					onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
+					onKeyDown={(e) => e.key === "Enter" && e.target.blur()}
 					onBlur={(e) => updateNode(id, {customisation: {...customisation, fontSize: e.target.value}})}
+					title="Font size"
 				/>
 
-				<div className={styles.textAlignBtns}>
+				<div className={styles.textAlignBtns} title="Text align">
 					{/* Make buttons selectables maybe use radio */}
 					<button onClick={() => updateNode(id, {customisation: {...customisation, textAlign: "left"}})}>LLL</button>
 					<button onClick={() => updateNode(id, {customisation: {...customisation, textAlign: "center"}})}>CCC</button>
@@ -137,71 +155,64 @@ const CanvasUI = ( {nodeData, addNode, updateNode} ) => {
 					variant="standard"
 					slotProps={{input: { disableUnderline: true }}}
 					value={colors.textColor}		
-					onChange={(color) => handleContentChange(color, "textColor")}
+					onChange={(color) => handleColorChange(color, "textColor")}
+					title="Text color"
 				/>
 			</div>
 
 			{/* SECTION 2 */}
 			<div className={styles.s2}>
+				{/* POSITIONS */}
 				<div className={styles.property}>
 					<span className={styles.title}>Position: </span>
-					<label className={styles.subProperty}>
-						<span className={styles.subTitle}>x: </span>
-						<input type="number" value={pos.x}
-							onChange={(e) => setPos({...pos, x: e.target.value})}
-							onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
-							onBlur={() => updateNode(id, {pos_x: pos.x})}
-						/>
-					</label>
-					<label className={styles.subProperty}>
-						<span className={styles.subTitle}>y: </span>
-						<input type="number" value={pos.y}
-							onChange={(e) => setPos({...pos, y: e.target.value})}
-							onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
-							onBlur={() => updateNode(id, {pos_y: pos.y})}
-						/>
-					</label>
-					<label className={styles.subProperty}>
-						<span className={styles.subTitle}>z: </span>
-						<input  type="number" value={pos.z}
-							onChange={(e) => setPos({...pos, z: e.target.value})}
-							onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
-							onBlur={() => updateNode(id, {pos_z: pos.z})}
-						/>
-					</label>
+					<ConfiguredInput
+						value={pos.x}
+						config={INPUT_CONFIGS.positionX}
+						onChange={(val) => setPos({...pos, x: val})}
+						onBlur={(val) => updateNode(id, {pos_x: val})}
+					/>
+					<ConfiguredInput
+						value={pos.y}
+						config={INPUT_CONFIGS.positionY}
+						onChange={(val) => setPos({...pos, y: val})}
+						onBlur={(val) => updateNode(id, {pos_y: val})}
+					/>
+					<ConfiguredInput
+						value={pos.z}
+						config={INPUT_CONFIGS.positionZ}
+						onChange={(val) => setPos({...pos, z: val})}
+						onBlur={(val) => updateNode(id, {pos_z: val})}
+					/>
 				</div>
 
 				<hr />
 
+				{/* DIMENIONS */}
 				<div className={styles.property}>
 					<span className={styles.title}>Dimensions: </span>
-					{/* if shape is rect then: */}
-						<label className={styles.subProperty}>
-							<span className={styles.subTitle}>w: </span>
-							<input type="number" value={dimensions.w}
-								onChange={(e) => setDimensions({...dimensions, w: e.target.value})}
-								onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
-								onBlur={() => updateNode(id, {customisation: {...customisation, width: dimensions.w}})}
-							/>
-						</label>
-						<label className={styles.subProperty}>
-							<span className={styles.subTitle}>h: </span>
-							<input type="number" value={dimensions.h}
-								onChange={(e) => {setDimensions({...dimensions, h: e.target.value})}}
-								onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
-								onBlur={() => updateNode(id, {customisation: {...customisation, height: dimensions.h}})}
-							/>
-						</label>
-						<label className={styles.subProperty}>
-							<span className={styles.subTitle}>↻: </span>
-							<input type="number" value={dimensions.r}
-								onChange={(e) => {setDimensions({...dimensions, r: e.target.value})}}
-								onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
-								onBlur={() => updateNode(id, {customisation: {...customisation, rotate: dimensions.r}})}
-							/>
-						</label>
+					<ConfiguredInput
+						value={dimensions.w}
+						config={INPUT_CONFIGS.dimensionWidth}
+						onChange={(val) => setDimensions({...dimensions, w: val})}
+						onBlur={(val) => updateNode(id, {customisation: {...customisation, width: val}})}
+					/>
+
+					<ConfiguredInput
+						value={dimensions.h}
+						config={INPUT_CONFIGS.dimensionHeight}
+						onChange={(val) => setDimensions({...dimensions, h: val})}
+						onBlur={(val) => updateNode(id, {customisation: {...customisation, height: val}})}
+					/>
+
+					<ConfiguredInput
+						value={dimensions.r}
+						config={INPUT_CONFIGS.dimensionRotation}
+						onChange={(val) => setDimensions({...dimensions, r: val})}
+						onBlur={(val) => updateNode(id, {customisation: {...customisation, rotate: val}})}
+					/>
 				</div>
 			</div>
+
 			<hr />
 
 			{/* SECTION 3 */}
@@ -214,67 +225,72 @@ const CanvasUI = ( {nodeData, addNode, updateNode} ) => {
 							variant="standard"
 							slotProps={{input: { disableUnderline: true }}}
 							value={colors.backgroundColor}		
-							onChange={(color) => handleContentChange(color, "backgroundColor")}
+							onChange={(color) => handleColorChange(color, "backgroundColor")}
 						/>
 					</label>
-
-					
 				</div>
 				
 				<div className={styles.property}>
 					<span className={styles.title}>Border: </span>
-						<label className={styles.subProperty}>
-							<span className={styles.subTitle}>color: </span> 
-							<MuiColorInput className={styles.borderColor} format="hex8"
-								variant="standard"
-								slotProps={{input: { disableUnderline: true }}}
-								value={colors.borderColor}		
-								onChange={(color) => handleContentChange(color, "borderColor")}
-							/>
-						</label>
-						<label className={styles.subProperty}>
-							<span className={styles.subTitle}>thickness: </span>
-							<input type="number" value={border.thickness}
-								onChange={(e) => setBorder({...border, thickness: e.target.value})}
-								onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
-								onBlur={() => updateNode(id, {customisation: {...customisation, borderThickness: border.thickness}})}
-							/>
-						</label>
-						<label className={styles.subProperty}>
-							<span className={styles.subTitle}>radius: </span>
-							<input type="number" value={border.radius}
-								onChange={(e) => setBorder({...border, radius: e.target.value})}
-								onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
-								onBlur={() => updateNode(id, {customisation: {...customisation, borderRadius: border.radius}})}
-							/>
-						</label>
-				</div>
 
+					<label className={styles.subProperty}>
+						<span className={styles.subTitle}>color: </span> 
+						<MuiColorInput className={styles.borderColor} format="hex8"
+							variant="standard"
+							slotProps={{input: { disableUnderline: true }}}
+							value={colors.borderColor}		
+							onChange={(color) => handleColorChange(color, "borderColor")}
+						/>
+					</label>
+
+					<ConfiguredInput
+						value={border.thickness}
+						config={INPUT_CONFIGS.borderThickness}
+						onChange={(val) => setBorder({...border, thickness: val})}
+						onBlur={(val) => updateNode(id, {customisation: {...customisation, borderThickness: val}})}
+					/>
+					<ConfiguredInput
+						value={border.radius}
+						config={INPUT_CONFIGS.borderRadius}
+						onChange={(val) => setBorder({...border, radius: val})}
+						onBlur={(val) => updateNode(id, {customisation: {...customisation, borderRadius: val}})}
+					/>
+				</div>
 			</div>
+
 			<hr />
-		
-			{/* SECTION 4 */}
-			{/* <div className={styles.s4}>
-				<h4>Node Name</h4>
-				<div className={styles.connectionContainer}>
-
-				</div>
-			</div> */}
-
 		</div>
 		}
 		
 
 
-
 		{/* NODE LIST */}
-		<div className={`${styles.nodeList} ${nodeListVisible ? styles.openedList : "" }`}>
-			{/* LIST HANDLE */}
-			<button className={styles.nodeListHandle} onClick={() => setNodeListVisible(!nodeListVisible)}>
-				{(nodeListVisible) ? "<" : ">"}
+		<div className={`${styles.nodeListPanel} ${nodeListPanelVisible ? styles.openedList : "" }`}>
+			{/* HANDLE */}
+			<button className={styles.nodeListPanelHandle} onClick={() => setnodeListPanelVisible(!nodeListPanelVisible)}>
+				{(nodeListPanelVisible) ? "<" : ">"}
 			</button>
 
-			{/* Map component list here with delete button */}
+			<h3>Nodes List</h3>
+
+			<hr />
+
+			<div className={styles.nodeList}>
+				{compArray.map((comp) => (
+					<div key={comp.id} className={`${styles.nodeBar} ${id === comp.id && styles.selectedNodeBar}`}>
+						<p>{comp.name || "Untitled"}</p>
+						<div className={styles.buttonWrapper}>
+							<button onClick={() => {
+								setTransform(-comp.pos_x + comp.customisation.width, -comp.pos_y + comp.customisation.height, 1)
+								setSelectedNodeData(comp)
+							}}>
+								🔍</button>
+							<button onClick={() => deleteNode(comp.id)}>🗑️</button>
+						</div>
+					</div>
+				))}
+			</div>
+		
 		</div>
 		
 
@@ -282,12 +298,7 @@ const CanvasUI = ( {nodeData, addNode, updateNode} ) => {
 		{/* CONTROL PANEL */}
 		<div className={styles.controlPanel}>
 			<div onClick={addNode}>T⁺</div>
-			<div>→⁺</div>
-			<div>↔⁺</div>
-			<div>✎⁺</div>
-
 		</div>
-
 
 		</div>
 
@@ -295,3 +306,18 @@ const CanvasUI = ( {nodeData, addNode, updateNode} ) => {
 }
 
 export default CanvasUI
+
+
+// const InputBox = ({subTitle, object, propertyName, setObject, dbName, updateNode, id, customisation}) => {
+	
+// 	return(
+// 		<label className={styles.subProperty}>
+// 			<span className={styles.subTitle}>{subTitle}: </span>
+// 			<input type="text" value={object[propertyName]}
+// 				onChange={(e) => setObject({...object, [propertyName]: e.target.value})}
+// 				onKeyDown={(e) => {if (e.key === "Enter") {e.target.blur()}}}
+// 				onBlur={() => updateNode(id, {customisation: {...customisation, [dbName]: object[propertyName]}})}
+// 			/>
+// 		</label>
+// 	)
+// }

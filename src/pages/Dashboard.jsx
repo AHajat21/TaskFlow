@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import toast, {Toaster} from 'react-hot-toast'
 
 import { useUser } from '../context/UserContext'
-import { fetchProjectsSupa, createProjectSupa, deleteProjectSupa, renameProjectSupa } from '../utils/supabaseQueries'
+import { fetchProjectsSupa, createProjectSupa, deleteProjectSupa, updateProjectSupa } from '../utils/supabaseQueries'
 import { validateProjectName } from '../utils/validation'
 
 import ProjectCard from '../components/ProjectCard'
@@ -54,15 +54,21 @@ const Dashboard = () => {
 		try {
 			setIsCreatePopupOpen(false)
 			const newProject = await createProjectSupa(projectName.trim())
-			setProjectsArray((prev) => [...prev, newProject[0]])
+			setProjectsArray((prev) => [newProject[0], ...prev])
 			toast.success("Project created successfully")
 		} catch (err) {
 			setError("Failed to create project")
 		}
 	}
-	const renameProject = async (id, name) => {
+	const renameProject = async (id, name,) => {
+		const err = validateProjectName(name)
+		if (err) {
+			setError(err)
+			return
+		}
+
 		try {
-			await renameProjectSupa(id, name)
+			await updateProjectSupa(id, {name: name, updated_at: new Date()})
 			setProjectsArray(prev => 
       		prev.map(p => p.id === id ? { ...p, name: name.trim() } : p)
     		)
@@ -93,17 +99,13 @@ const Dashboard = () => {
 				reverseOrder={false}
 			/>
 
-			{/* SIDEBAR */}
-			<aside className={styles.sidebar}></aside>
 
-
+			{/* PROJECT LIST */}
 			<div className={styles.heading}>
 				<h1>Dashboard</h1>
 				<hr />
 				<button onClick={() => setIsCreatePopupOpen(true)}>✚</button>
 			</div>
-			
-			{/* PROJECT LIST */}
 			
 			{/* is list empty? */}
 			{projectsArray.length === 0 ?
@@ -121,11 +123,11 @@ const Dashboard = () => {
 							onClicked={goToProject}
 							setError={setError}
 						/>
-					))}
+					)
+					)}
 				</div>
 			}
 	 	</div>
-
   	)
 }
 

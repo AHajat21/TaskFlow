@@ -11,14 +11,19 @@ const Header = () => {
 
   	return (
 		<header className={styles.header}>
-			<Link className={styles.title} to={`/${username}`}>
-				<h1 >Task Manager</h1>
-			</Link>
-			<Link className={styles.aboutLink} to="/about">About</Link>
-			
-			
+			<div className={styles.siteWrapper}>
+				<Link className={styles.title} to={`/${username}`}>
+					<h1>TaskFlow</h1>
+				</Link>
+				<Link className={styles.aboutLink} to="/about">About</Link>
+			</div>
+
+						
  			{user ?
-				<button className={styles.logoutButton} onClick={handleLogout} disabled={loading}>Logout</button>
+				<div className={styles.userWrapper}>
+					<p>{username}</p>
+					<button className={styles.logoutButton} onClick={handleLogout} disabled={loading}>Logout</button>
+				</div>
 				:
 				<Link className={styles.loginLink} to="/login">Login</Link>
 			}

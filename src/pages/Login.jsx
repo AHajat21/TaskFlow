@@ -73,10 +73,7 @@ const Login = () => {
 					{loading ? 
 						<span className={styles.loader}></span>
 					:
-						error ?
-							<span className={styles.error}>{error}</span>
-						:
-							<span className={styles.error} style={{visibility: 'hidden'}}> </span>
+						<span className={error ? `${styles.errorPlaceholder} ${styles.error}` : styles.errorPlaceholder}>{error}</span>
 					}
 
 					<button className={styles.loginButton}
@@ -86,12 +83,11 @@ const Login = () => {
 						Login
 					</button>
 
-					<button
-						className={styles.signupButton}
+					<button className={styles.signupButton}
 						onClick={() => handleAuthSubmit(handleSignup)}
 						disabled={isDisabled}
-						>
-							Sign Up
+					>
+						Sign Up
 					</button>
 				</div>
 			</div>
