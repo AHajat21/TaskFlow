@@ -1,0 +1,74 @@
+	/* Base Styles */
+.aboutContainer {
+	background-color: rgba(0, 10, 60, 0.25);
+	max-width: 1200px;
+	padding: var(--space-lg);
+	display: flex;
+	flex-direction: column;
+}
+
+	/* Header */
+.aboutHeader {
+	text-align: center;
+	margin-bottom: var(--space-2xl);
+}
+
+.aboutHeader h1 {
+	font-size: 40px;
+	color: #333;
+	margin-bottom: var(--space-sm);
+}
+
+	/* Sections */
+section {
+	margin-bottom: var(--space-2xl);
+}
+
+section h2 {
+	font-size: 24px;
+	color: #444444;
+	margin-bottom: var(--space-md);
+}
+
+	/* Skills */
+.skillsGrid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-md);
+	margin-top: var(--space-md);
+}
+
+.skillsGrid div {
+	background: #f0f0f0;
+	padding: var(--space-md) var(--space-lg);
+	border-radius: var(--radius-sm);
+	font-weight: 700;
+	color: var(--text-dark-secondary);
+	box-shadow: var(--shadow-md);
+}
+
+	/* Contact */
+.contactSection {
+	margin-bottom: var(--space-xl);
+}
+
+.socialLinks {
+	display: flex;
+	gap: var(--space-md);
+	margin: var(--space-md) 0;
+	justify-content: center;
+}
+
+.socialLinks a {
+	color: #555;
+	text-decoration: none;
+	font-weight: bold;
+	padding: var(--space-sm) var(--space-md);
+	border-radius: var(--radius-sm);
+	transition: all 0.2s;
+}
+
+.socialLinks a:hover {
+	color: #333;
+	background: #f0f0f0;
+}

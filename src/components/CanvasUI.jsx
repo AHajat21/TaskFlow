@@ -271,7 +271,7 @@ const CanvasUI = ( {compArray, selectedNodeData, setSelectedNodeData, nodeFuncti
 				{(nodeListPanelVisible) ? "<" : ">"}
 			</button>
 
-			<h3>Nodes List</h3>
+			<h3>All Nodes</h3>
 
 			<hr />
 
